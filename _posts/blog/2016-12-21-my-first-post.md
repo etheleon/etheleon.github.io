@@ -14,8 +14,6 @@ image:
   creditlink: http://etheleon.github.io
 ---
 
-Let me just start this off, this is my personal blog, views are mine.
-
 So lets kick it off with some self introduction.
 Being a PhD Candidate here in NUS, Singapore in Computational Biology / Metagenomics, I have plenty of time to read up 
 on the latest statistical methods as well as learn how to apply them.
