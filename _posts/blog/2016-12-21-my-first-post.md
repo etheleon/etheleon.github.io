@@ -14,20 +14,25 @@ image:
   creditlink: http://etheleon.github.io
 ---
 
-So lets kick it off with some self introduction.
-Being a PhD Candidate here in NUS, Singapore in Computational Biology / Metagenomics, I have plenty of time to read up 
-on the latest statistical methods as well as learn how to apply them.
+So lets kick it off with some obligatory self introduction.
+Being a PhD Candidate here in NUS, Singapore (Computational Biology / Metagenomics),
+I encounter some pretty nifty data analyses which I would love to share.
 
-The blog fulfills the role as a platform for showcasing my analyses, technical aspects of my development
-and my recent forray in the startup scene here in Singapore.
+In particular the latest statistical / machine learning methods and the code required for the voodoo to happen.
 
-Being the tech co-founder of a Insurtech company, [fundMylife](https://fundmylife.co), it has opened my eyes to the many
+This here, fulfills both roles as a platform for sharing my ideas and thoughts (analyses and technical),
+and my recent forray into the startup scene here in Singapore.
+
+Being the tech co-founder of [fundMylife](https://fundmylife.co), a Insurtech company, it has opened my eyes to the many
 facets of doing a (tech) business.
-Besides software development, there’s so much more including marketing growth hacking and bizDev.
+Besides the basics of software development,
+there’s so much more now open to me: marketing, growth hacking and bizDev.
 
-Back to the blog, I’m guess I’ll first blog about my research analyses first before going into startups.
+Back to the introductory post, I’m guessing I’ll first blog about my research analyses before going into related to startups.
 
-The coming posts will be on analyzing mouse gut microbiomes which I’ve been working on for the past weeks.
-Furthermore, the post will be broken down into 2 smaller posts, code will of course be published together.
+The coming posts, 2 in fact, \*grins\* will be analyzing the gut microbiomes of three groups of mice -- two fed on two diets and one which had their diets changed from one to the other.
+Code will of course be published together.
 
 See ya folks!
+
+Looking forward to posting the analyses.
