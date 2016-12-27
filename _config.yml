@@ -1,9 +1,9 @@
 # Site wide configuration
 
-title: Personal Blog - all views are mine
+title: Ars de Datus-Scientia
 locale: en_US
-description: Portfolio, CV, Data analyses, Bioinformatics, Computational Biology
-logo: site-logo.png
+description: Musing of my personal views thoughts
+logo: personPhoto.png
 search: true
 url: //etheleon.github.io
 
