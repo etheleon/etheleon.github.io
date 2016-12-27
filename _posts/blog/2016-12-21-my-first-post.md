@@ -4,7 +4,7 @@ title: "My First post"
 excerpt: "Touching base"
 categories: blog
 tags: [introduction]
-author: Wesley Goi
+author: wesley_goi
 comments: true
 share: true
 modified: 2016-12-21

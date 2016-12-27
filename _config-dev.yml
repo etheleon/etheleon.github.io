@@ -5,7 +5,7 @@ locale: en_US
 description: Musing of a DataScience PhD (Env Microbiology)
 logo: personPhoto.png
 search: true
-url: https://etheleon.github.io
+url: http://localhost:4000
 
 # Jekyll configuration
 
