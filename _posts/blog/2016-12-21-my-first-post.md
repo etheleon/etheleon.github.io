@@ -2,7 +2,7 @@
 layout: post
 title: "My First post"
 excerpt: "Touching base"
-categories: articles
+categories: blog
 tags: [introduction]
 author: Wesley Goi
 comments: true
