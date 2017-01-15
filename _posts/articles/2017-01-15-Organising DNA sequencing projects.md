@@ -18,7 +18,9 @@ image:
 
 Coming from a non-Computer Science related field but find yourself having to navigate yourself in some data analysis? I won't blame you if you feel at a loss as to where you should begin?
 
+{:refdef: style="text-align: center;"}
 ![That's me](http://m.quickmeme.com/img/da/da7c74e10383ecc127dbb18b7d812abfb7f2aa1092f116d09a3ae70e782fc059.jpg)
+{:refdef}
 
 Posts like *which language should you learn for datascience* often catch our eyes and it's no different whether you're doing [bioinformatics](https://www.biostars.org/p/7763/) or something far removed such as [HR analytics](https://www.linkedin.com/pulse/hr-analytics-starter-kit-part-2-intro-r-richard-rosenow-pmp).
 
@@ -27,7 +29,9 @@ The only advise I have is to immerse yourself as much as you can whenever you ge
 
 There's even a level up tree starting from a junior Bioinformatics analyst to a full on role, much like how it was described in this [post](http://homolog.us/blogs/blog/2011/07/22/a-beginners-guide-to-bioinformatics-part-i/).
 
+{:refdef: style="text-align: center;"}
 ![upgrade ursself](https://s.aolcdn.com/hss/storage/midas/daede00598c17d19b29a93ff65147585/200016989/priest+trees.jpg)
+{:refdef}
 
 Below's a list of skills I've successfully mastered in 2016.
 
@@ -49,14 +53,19 @@ But quickly realised much of the analyses I do is often not at all linear.
 
 It often works as like a networks. ScriptN+10 needs ScriptN+2 functions, there's dependency when the project works up to a relatively medium->small size.
 
+
+{:refdef: style="text-align: center;"}
 ![galaxy workflow](https://raw.githubusercontent.com/mikel-egana-aranguren/SADI-Galaxy-Docker/master/workflow_screen.png)
+{:refdef}
 
 The above is a screenshot of the dependency network using galaxy workflow. 
 It nicely summarises some of what I do. I searched around for a CLI version and stumbled upon [Luigi](https://github.com/spotify/luigi)
 
 In 2016, I tried using luigi (python package from spotify to deal scheduled tasks) but found it too complicated for something I could solve simply by doing OOP. Not everything is a routine operation but dependencies on another hand is a real thing.
 
+{:refdef: style="text-align: center;"}
 ![luigi](https://i.stack.imgur.com/xFUmZ.png)
+{:refdef}
 
 What OOP does is it allows you to use design patterns.
 Design patterns are [predefined solutions to specific kinds of problems, proven over time and known by the software community](https://simpleprogrammer.com/2016/06/15/dont-get-obsessed-design-patterns/), but just remember not to get too obsessed with it.
@@ -126,7 +135,9 @@ Meanwhile I found out one of my mentors, who is now working in heavily in indust
 What containers really do is _disrupt_ is [MAKE](https://www.gnu.org/software/make/). So instead often confusing makefiles, one writes dockerfiles and everything that gets installed stays within the container without 
 polluting your host environment, pretty much like a function.
 
+{:refdef: style="text-align: center;"}
 ![docker is like a function](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Function_machine2.svg/1200px-Function_machine2.svg.png)
+{:refdef}
 
 Docker is the most mainstream of all container technologies and you should take a look at the [biocontainers](https://github.com/BioContainers/containers) github page, there you can find
 many bioinformatics softwares containerized!
@@ -169,7 +180,9 @@ popular bioinformatics tools.
 
 This makes installing and ultimately doing science much easier than before.
 
+{:refdef: style="text-align: center;"}
 ![science tap](http://imgs.xkcd.com/comics/outreach.png)
+{:refdef}
 
 If you're still confused about how to do local installations, i recommend reading this [post](http://sneakygcr.net/caged-python-how-to-set-up-a-scientific-python-stack-in-your-home-folder-without-going-insane.html), although its title has Python, its really meant for everything.
 
@@ -194,7 +207,9 @@ Interestingly, the Rstudio team has also come up with R notebooks. I'm sure many
 
 For those who know me in person, you know I'm a big fan of the terminal. And I do most of my work if not all in that one window. So when I'm in the server I'll always have a tmux session running
 
+{:refdef: style="text-align: center;"}
 ![my tmux](https://github.com/jpalardy/vim-slime/raw/master/assets/vim-slime.gif)
+{:refdef}
 
 [This is a good tutorial](https://www.google.com.sg/search?q=tmux+r+plugin&oq=tmux+r+plugin&aqs=chrome..69i57j0l5.1754j0j1&sourceid=chrome&ie=UTF-8) and it teaches how to work with R in the server like a cluster away from familiar Rstudios.
 Recently I've switched from this to [vim-slime](https://github.com/jpalardy/vim-slime) a vim port of the Emacs slime cause it also supports IPYTHON.
@@ -213,7 +228,9 @@ There's a lot of talk about reproducibility and really much of it has been solve
 Personally, I'm aspiring to be able to write code good enough for a industry setting. 
 The crossover from academia into industry isn't that uncommon, here's a [post](https://eng.uber.com/emi-data-science-q-a/) about a nucelar physist who is now working in UBER and doing both datascience and shipping production code some even do some engineering as well
 
+{:refdef: style="text-align: center;"}
 ![pay scale](https://qph.ec.quoracdn.net/main-qimg-9281e2345d6f6adfc2c42c2fa1001094?convert_to_webp=true)
+{:refdef}
 
 Thats all folk's!
 I hope this helped you get orientated around Bioinformatics.
