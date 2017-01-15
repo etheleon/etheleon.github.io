@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "10 Bioinformatics tools and workflows you should be adopting in 2017."
-excerpt: "Coming from a non-Computer Science related field but find yourself having to navigate yourself in some data analysis? I won't blame you if you feel of at a loss as to where you should begin? Lets checkout the common tools I'm using for bioinformatics"
+excerpt: "Coming from a non-Computer Science related field but find yourself having a hard time navigating data analysis? I won't blame you if you feel of at a loss as to where you should begin? Lets checkout the common tools I'm using for bioinformatics"
 categories: articles
 tags: [bioinformatics, software, workflows]
 author: wesley_goi
@@ -16,7 +16,7 @@ image:
   creditlink: http://etheleon.github.io
 ---
 
-Coming from a non-Computer Science related field but find yourself having to navigate yourself in some data analysis? I won't blame you if you feel at a loss as to where you should begin?
+Coming from a non-Computer Science related field but find yourself having a hard time navigating data analysis? I won't blame you if you feel at a loss as to where you should begin?
 
 {:refdef: style="text-align: center;"}
 ![That's me](http://m.quickmeme.com/img/da/da7c74e10383ecc127dbb18b7d812abfb7f2aa1092f116d09a3ae70e782fc059.jpg)
