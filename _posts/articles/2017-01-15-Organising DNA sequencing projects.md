@@ -221,6 +221,11 @@ Learning web development, while building [fundMyLife](https://www.fundmylife.co)
 BioJS is one of those interesting developments where important visualisations are now rendered in a browser and hence any operating system. 
 You see this trend outside of bioinformatics where editors like Atom and Visual Studio Code, and communications tool Slack are all built as a browser based application.
 
+![biojs-gosc](https://lh5.googleusercontent.com/FbUHBUY-GmrI727nQd3K2lid0I4nPWpQUydyXEibMdfrnOeLB5wXlKlQWPSAMeBz_rfa8YAFjpQZjWItcpqrSHOoy6BGcCKw6AWjk3SjkBfmopJnzG3k-fxW4hdtO0xAS8Brjv2J)
+
+
+The admins are were even featured in 2016's GSoC checkout the blogpost [part2](https://opensource.googleblog.com/2016/08/from-google-summer-of-code-to-game-of.html), [part2](https://opensource.googleblog.com/2016/08/from-google-summer-of-code-to-game-of_12.html) where they went on to build visualisation for the Game Of Thrones
+
 ## 1. Writing production ready code
 
 There's a lot of talk about reproducibility and really much of it has been solved in the industry. Nearing the end of the PhD, means most of my packages should be ready for use by the public at large.
