@@ -230,8 +230,8 @@ The admins are were even featured in 2016's GSoC checkout the blogpost [part2](h
 
 There's a lot of talk about reproducibility and really much of it has been solved in the industry. Nearing the end of the PhD, means most of my packages should be ready for use by the public at large.
 
-Personally, I'm aspiring to be able to write code good enough for a industry setting. 
-The crossover from academia into industry isn't that uncommon, here's a [post](https://eng.uber.com/emi-data-science-q-a/) about a nucelar physist who is now working in UBER and doing both datascience and shipping production code some even do some engineering as well
+Personally, I'm aspiring to be able to write code good enough for a industry setting.
+The crossover from academia into industry isn't that uncommon, here's a [post](https://eng.uber.com/emi-data-science-q-a/) about a nucelar physicist who is now working in UBER and doing both datascience and shipping production code some even do some engineering as well
 
 {:refdef: style="text-align: center;"}
 ![pay scale](https://qph.ec.quoracdn.net/main-qimg-9281e2345d6f6adfc2c42c2fa1001094?convert_to_webp=true)
