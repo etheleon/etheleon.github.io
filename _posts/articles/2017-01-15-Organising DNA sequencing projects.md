@@ -150,7 +150,7 @@ Don't worry about accessing your files from your home directory, it isn't a prob
 
 Talk about inception
 
-Together this is solves an acute problem as it gives the normal user back the ability to be root without ruining the rest of the host system and still have performance similar to running on bare metal.
+Together this solves an acute problem as it gives the normal user back the ability to be root without ruining the rest of the host system and still have performance similar to running on bare metal.
 
 One disadvantage of using Docker is installing docker itself requires root access and if you're dealing with a university wide shared resource good luck.
 
