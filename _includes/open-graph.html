@@ -19,8 +19,8 @@
 <meta property="og:url" content="{{ page.url | replace:'index.html','' | prepend: site.url }}">
 <meta property="og:site_name" content="{{ site.title }}">
 
-<!--{% if page.image %}-->
-  <!--<meta property="og:image" content="{{page.image}}" />-->
-<!--{% else %}-->
-  <!--<meta property="og:image" content="https://etheleon.github.io/images/bioinformatics_tools.png" />-->
-<!--{% endif %}-->
+{% if page.image %}
+  <meta property="og:image" content="{{page.image}}" />
+{% else %}
+  <meta property="og:image" content="https://etheleon.github.io/images/bioinformatics_tools.png" />
+{% endif %}
