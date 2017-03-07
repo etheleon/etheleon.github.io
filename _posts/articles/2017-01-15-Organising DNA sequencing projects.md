@@ -3,7 +3,7 @@ layout: post
 title: "10 Bioinformatics tools and workflows you should be adopting in 2017."
 excerpt: "Coming from a non-Computer Science related field but find yourself having a hard time navigating data analysis? I won't blame you if you feel of at a loss as to where you should begin? Lets checkout the common tools I'm using for bioinformatics"
 categories: articles
-tags: [bioinformatics, software, workflows]
+tags: [bioinformatics, software, workflows, megan, python]
 author: wesley_goi
 comments: true
 share: true
