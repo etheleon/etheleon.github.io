@@ -7,9 +7,11 @@
 {% if page.image.feature %}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="{{ site.url }}/images/{{ page.image.feature }}">
+<meta property="og:image" content="{{ site.url }}/images/{{ page.image.feature }}">
 {% else %}
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="{% if page.image.thumb %}{{ site.url }}/images/{{ page.image.thumb }}{% else %}{{ site.url }}/images/{{ site.logo }}{% endif %}">
+<meta property="og:image" content="https://etheleon.github.io/images/bioinformatics_tools.png" />
 {% endif %}
 <!-- Open Graph -->
 <meta property="og:locale" content="{{ site.locale }}">
@@ -18,7 +20,6 @@
 {% if page.excerpt %}<meta property="og:description" content="{{ page.excerpt | strip_html }}">{% endif %}
 <meta property="og:url" content="{{ page.url | replace:'index.html','' | prepend: site.url }}">
 <meta property="og:site_name" content="{{ site.title }}">
-<meta property="og:image" content="https://etheleon.github.io/images/bioinformatics_tools.png" />
 
 <!--{% if page.image %}-->
   <!--<meta property="og:image" content="{{page.image}}" />-->
