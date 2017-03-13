@@ -142,6 +142,8 @@ You can now quickly summarise in a gene centric format the contributions made fr
 
 ![mosiac plot](/images/posts/combiningTAX-KO.png)
 
+Here we see the transcriptome summary and one highest expressed KOs (right most) is a one responsible for nitrogen metabolism is mostly being expressed by a single genus (orange).
+
 `0` in the `ncbi-taxid` and `K00000` in the KEGG-ko columns stands for unclassified.
 
 What if you want to find out the names organisms from NCBI’s taxid?
