@@ -125,7 +125,7 @@ We’ve separately included in the tools folder of the python package the [ref2k
 ### Full pipeline
 
 ```
-fullPipeline --rootDir $PROJECTDIR --sampleDir $SAMPLEDIR --sampleName $SAMPLENAME--inputFile $INPUTFILE --taxOutput taxOutput --koOutput koOutput
+fullPipeline $PROJECTDIR $SAMPLEDIR $SAMPLENAME $INPUTFILE taxOutput koOutput
 ```
 
 The `fullPipeline` script will take a `.m8` (tabbed blast)  file or meganised `.DAA` file as input (checked via regex `.m8` or `.daa`) and carry out the taxonomic and functional (KEGG) annotation and take the outputs and generate a combined output
