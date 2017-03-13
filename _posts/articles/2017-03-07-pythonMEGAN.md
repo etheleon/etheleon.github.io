@@ -117,6 +117,10 @@ species 1262919 K00000  529
 
 `0` in the `ncbi-taxid` and `K00000` in the KEGG-ko columns stands for unclassified.
 
+What if you want to find out the names organisms from NCBI’s taxid?
+
+Checkout [R package MetamapsDB](https://github.com/etheleon/MetamapsDB) which lets you query the names based on taxids and do much more
+
 ### Full pipeline
 
 ```
