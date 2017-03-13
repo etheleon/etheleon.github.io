@@ -22,8 +22,7 @@ Download now from: [https://github.com/etheleon/megan](https://github.com/ethele
 
 > "Metagenomics (also referred to as environmental and community genomics) is the genomic analysis of microorganisms by direct extraction and cloning of DNA from an assemblage of microorganisms."
 
-From beginners to intermediate beginners in the field of Metagenomics.
-One tool you’ll quickly come across is MEGAN from Daniel Huson’s Lab in Tubingen University.
+From absolute beginners to intermediate beginners,in the field of Metagenomics, one tool you’ll quickly and most certainly come across is MEGAN from Daniel Huson’s Lab in Tubingen University.
 
 [![MEGANimg](http://megan.informatik.uni-tuebingen.de/uploads/default/original/1X/c3b77ecaaa6f3b8f4c71d45f070a3a6b9952605b.png)](http://ab.inf.uni-tuebingen.de/software/megan/)
 
