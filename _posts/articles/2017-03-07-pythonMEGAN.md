@@ -18,7 +18,7 @@ image:
 
 # blast2lca++ a Python Wrapper for MEGAN blast2lca
 
-Download now from: [https://github.com/etheleon/megan](https://github.com/etheleon/megan)
+Download now from: [https://github.com/etheleon/blast2lcaPlus](https://github.com/etheleon/blast2lcaPlus)
 
 > "Metagenomics (also referred to as environmental and community genomics) is the genomic analysis of microorganisms by direct extraction and cloning of DNA from an assemblage of microorganisms."
 
@@ -42,7 +42,7 @@ Discussions about MEGAN server will be outside of the blogpost, message the auth
 
 ## blast2lca++
 
-In this blogpost, I'll be sharing with you python wrappers [https://github.com/etheleon/megan](https://github.com/etheleon/megan), I've written around `blast2lca`. (At the time of writing I tested this with MEGAN6 community edition 6.6.0 from Dec 2016).
+In this blogpost, I'll be sharing with you python wrappers [https://github.com/etheleon/blast2lcaPlus](https://github.com/etheleon/blast2lcaPlus), I've written around `blast2lca`. (At the time of writing I tested this with MEGAN6 community edition 6.6.0 from Dec 2016).
 
 ### Use case
 
@@ -66,7 +66,7 @@ Use `blast2lca++` tool of course!
 
 ### Combine Annotations
 
-In the root directory of the github [repo](https://github.com/etheleon/megan), you'll find a `parseMEGAN` python script.
+In the root directory of the github [repo](https://github.com/etheleon/blast2lcaPlus), you'll find a `parseMEGAN` python script.
 
 It requires blast results be arranged in the following manner:
 
@@ -163,7 +163,7 @@ The `fullPipeline` script will take a `.m8` (tabbed blast)  file or meganised `.
 Although MEGAN UE provides a KEGG mapper generating tool (not included with MEGAN CE), it doesnt take into consideration how NCBI has assigned a unique `GI` to each representative sequence in the non-redundant database (NCBI NR) under which are “duplicate” sequence GIs and ref IDs
 when blast or diamond does the alignment it only returns the former and the rest. It makes the kegg to gi mapping irrelevent.
 
-We’ve separately included in the tools folder of the python package the [ref2kegg.go nr-gi to kegg ortholog KO mapping file generator](https://github.com/etheleon/MEGAN/blob/master/tools/ref2kegg.go) written in golang. The output of this could be fed to the blast2lca wrapper via the `--gi2kegg` flag. At 
+We’ve separately included in the tools folder of the python package the [ref2kegg.go nr-gi to kegg ortholog KO mapping file generator](https://github.com/etheleon/blast2lcaPlus/blob/master/tools/ref2kegg.go) written in golang. The output of this could be fed to the blast2lca wrapper via the `--gi2kegg` flag. At 
 the time of writing the parser is written in golang (a typed language) from perl to increase the speed of parsing the NR fasta.
 
 
