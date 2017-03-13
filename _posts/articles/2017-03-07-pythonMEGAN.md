@@ -18,6 +18,8 @@ image:
 
 # blast2lca++ a Python Wrapper for MEGAN blast2lca
 
+Download now from: [https://github.com/etheleon/megan](https://github.com/etheleon/megan)
+
 > "Metagenomics (also referred to as environmental and community genomics) is the genomic analysis of microorganisms by direct extraction and cloning of DNA from an assemblage of microorganisms."
 
 From beginners to intermediate beginners in the field of Metagenomics.
