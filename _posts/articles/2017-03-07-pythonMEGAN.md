@@ -125,8 +125,6 @@ fullPipeline $PROJECTDIR $SAMPLEDIR $SAMPLENAME $INPUTFILE taxOutput koOutput --
 
 The `fullPipeline` script will take a `.m8` (tabbed blast)  file or meganised `.DAA` file as input (checked via regex `.m8` or `.daa`) and carry out the taxonomic and functional (KEGG) annotation and take the outputs and generate a combined output
 
-![end](https://i.imgflip.com/123oks.jpg)
-
 ### gi2ko mapping file generator
 
 Although MEGAN UE provides a KEGG mapper generating tool (not included with MEGAN CE), it doesnt take into consideration how NCBI has assigned a unique GI to each representative sequence in the non-redundant database (NCBI NR) under which are “duplicate” sequence GIs and ref IDs
@@ -134,6 +132,8 @@ when blast or diamond does the alignment it only returns the former and the rest
 
 We’ve separately included in the tools folder of the python package the [ref2kegg.go nr-gi to kegg ortholog KO mapping file generator](https://github.com/etheleon/MEGAN/blob/master/tools/ref2kegg.go). The output could be to wrapper via the `--gi2kegg` flag. At the time of writing the parser is written in golang (typed lang) to increase the speed of parsing the NR fa file.
 
+
+![end](https://i.imgflip.com/123oks.jpg)
 
 
 Hope this helps anyone doing any customised pipeline with MEGAN6!
