@@ -70,7 +70,7 @@ It requires data be arranged in the following manner:
 You’ll be asked to specify the locations of the mapping files (KEGG and taxonomy as well as the path to the executable)
 
 ```
-parseMEGAN $PROJECTDIR $SAMPLEDIR $SAMPLENAME taxOutput koOutput --blast2lca <path 2 the blast2lca script> --gi2tax <path to the taxonomy mapping file> --gi2kegg <path to the KEGG mapping file>
+parseMEGAN $PROJECTDIR $SAMPLEDIR $SAMPLENAME taxOutput koOutput
 ```
 
 After which you'll get the outputs from blast2lca and with a merged file `sample-combined.txt`
@@ -118,7 +118,7 @@ species 1262919 K00000  529
 ### Full pipeline
 
 ```
-fullPipeline $PROJECTDIR $SAMPLEDIR $SAMPLENAME $INPUTFILE taxOutput koOutput
+fullPipeline $PROJECTDIR $SAMPLEDIR $SAMPLENAME $INPUTFILE taxOutput koOutput --blast2lca <path 2 the blast2lca script> --gi2tax <path to the taxonomy mapping file> --gi2kegg <path to the KEGG mapping file>
 ```
 
 The `fullPipeline` script will take a `.m8` (tabbed blast)  file or meganised `.DAA` file as input (checked via regex `.m8` or `.daa`) and carry out the taxonomic and functional (KEGG) annotation and take the outputs and generate a combined output
