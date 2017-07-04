@@ -4,7 +4,7 @@ title: Personal Blog and Wall for musings
 excerpt: "No one will help you unless you help yourself"
 modified: 2014-08-08T19:44:38.564948-04:00
 image:
-  feature:
+  feature: kumano.png
   credit: Wesley GOI
   creditlink: http://wegraphics.net/downloads/free-ultimate-blurred-background-pack/
 ---
