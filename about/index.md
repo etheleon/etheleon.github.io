@@ -1,26 +1,26 @@
 ---
 layout: page
-title: About the Jekyll Theme
-excerpt: "So Simple is a responsive Jekyll theme for your words and images."
+title: Personal Blog and Wall for musings
+excerpt: "No one will help you unless you help yourself"
 modified: 2014-08-08T19:44:38.564948-04:00
 image:
-  feature: so-simple-sample-image-4.jpg
-  credit: WeGraphics
+  feature:
+  credit: Wesley GOI
   creditlink: http://wegraphics.net/downloads/free-ultimate-blurred-background-pack/
 ---
 
-Looking for a simple, responsive, theme for your Jekyll powered blog? Well look no further. Here be **So Simple Theme**, the follow up to [**Minimal Mistakes**](http://mmistakes.github.io/minimal-mistakes) --- by designer slash illustrator [Michael Rose](http://mademistakes.com).
+Hello, My name is Wesley Goi. I am currently doing my PhD at the National Univeristy of Singapore with Singapore Center for Life Science Engineering (SCELSE).
 
-## So Simple Theme is all about:
 
-* Responsive templates. Looking good on mobile, tablet, and desktop.
-* Gracefully degrading in older browsers. Compatible with Internet Explorer 9+ and all modern browsers.
-* Minimal embellishments and subtle animations.
-* Optional large feature images for posts and pages.
-* [Custom 404 page]({{ site.url }}/404.html) to get you started.
-* [Simple site search](https://github.com/christian-fei/Simple-Jekyll-Search)
-* Support for Disqus Comments
+My research interests are in the analysis of Metagenomics and Metatranscriptomics data from environmental samples such as wastewater, and data integration using SQL and noSQL database.
 
-<a markdown="0" href="{{ site.url }}/theme-setup" class="btn">Install So Simple Theme</a>
+In my free time I am the CTO (web developer and data scientist NLP data) cofounder of fundMyLife Private Limited (UEN 201700459H), a online Questions and Answer portal for financial literacy.
 
-[^1]: Example: *domain.com/category-name/post-title*
+
+What this site is about
+
+* A virtual archive for writing about my research and experiences in the startup sphere, sharpening my writing skills and place to put down my rants
+* You’ll find code examples to running the various softwares which I’ve written.
+
+<a markdown="0" href="{{ site.url }}" class="btn">Start reading now!</a>
+
