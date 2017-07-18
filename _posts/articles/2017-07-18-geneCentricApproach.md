@@ -2,7 +2,7 @@
 layout: post
 title: "From raw sequencing reads to Gene Centric Analyses PART: 1"
 excerpt: "The simulation behind our gene centric assembly analyses"
-categories: softwares
+categories: articles
 tags: [metagenomics, gut, assembly, gene centric assembly, SCELSE]
 author: wesley_goi
 comments: true
