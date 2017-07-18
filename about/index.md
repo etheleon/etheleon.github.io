@@ -9,13 +9,13 @@ image:
   creditlink: http://wegraphics.net/downloads/free-ultimate-blurred-background-pack/
 ---
 
-Hello, My name is Wesley Goi. I am currently doing my PhD at the National Univeristy of Singapore with Singapore Center for Life Science Engineering (SCELSE).
+Hello, I am Wesley Goi. I am currently finishing up with my PhD at the National Univeristy of Singapore (NUS) under research instutite called SCELSE which stands for Singapore Center for Life Science Engineering.
 
+My research interests are in the analysis of Biological data (DNA sequencing) obtained from sampling microbial communities of environmental samples, together is termed Metagenomics and Metatranscriptomics.
+This includes data warehousing and integration using SQL and noSQL databases and building processing pipelines.
 
-My research interests are in the analysis of Metagenomics and Metatranscriptomics data from environmental samples such as wastewater, and data integration using SQL and noSQL database.
-
-In my free time I am the CTO (web developer and data scientist NLP data) cofounder of fundMyLife Private Limited (UEN 201700459H), a online Questions and Answer portal for financial literacy.
-
+In my free time I am the CTO cofounder of fundMyLife Private Limited (UEN 201700459H), a Singapore company which acts as an online Questions and Answer portal for asking financial planning related questions the 
+(web developer and data scientist NLP data)
 
 What this site is about
 
