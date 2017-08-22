@@ -26,15 +26,17 @@ You could use a sample fastQ to generate MEGAN summary file and do this.
 
 ![theMatrix](http://i.dailymail.co.uk/i/pix/2012/10/11/article-0-006542AF00000258-91_634x345.jpg)
 
-Here at Singapore Centre for Environmental Life Sciences Engineering (SCELSE) NUS Peter and I work on a variety of Bioinformatics analyses concerning the Microbiome of Ulu Pandan’s microbial community. This ultimately led to pipelines and tools based on the sequencing data we retrieve from
+Here at Singapore Centre for Environmental Life Sciences Engineering (SCELSE) NUS, [Peter](http://www.scelse.sg/People/Detail/fa315ed9-015a-4414-b49e-5e0145e6ce42) and [myself](http://www.scelse.sg/People/Detail/f000cd6a-daf9-442b-b328-a7e3a2b6c64f) 
+work on a variety of Bioinformatics analyses concerning the Microbiome of Ulu Pandan’s microbial community. This ultimately led to pipelines and tools based on the sequencing data we retrieve from
 wastewater samples.
 
-One of the main topics I work on surrounds the development of a gene centric assembly analysis for poorly annotated microbiomes.
+One of the topics I work on surrounds the development of a gene centric assembly analysis for poorly annotated microbiomes.
 
 Our method briefly is split into the following steps
-    * Function binning using MEGAN’s Lowest Common Ancestor (LCA) algorithm,
-    * NEWBLER’s implementation of the Overlap Layout Consensus (OLC) and
-    * Conserve region analysis using a defined Maximum Diversity Region [pAss](https://github.com/etheleon/pAss).
+
+* Function binning using MEGAN’s Lowest Common Ancestor (LCA) algorithm,
+* NEWBLER’s implementation of the Overlap Layout Consensus (OLC) and
+* Conserve region analysis using a defined Maximum Diversity Region [pAss](https://github.com/etheleon/pAss).
 
 
 Unlike Huson _et al._, we explore the alignment of contigs against respective reference sequences before deciding upon a consensus region based on a multiple sequence alignment of reference sequences with captures the most number of contigs thus facilitating a diversity analysis.
@@ -64,20 +66,20 @@ The core algorithm works as follows:
 
 #### Implicit MSA of contigs
 
-    1. Firstly we begin by generating a MSA of protein reference sequences.
-    2. Thereafter, using MEGAN, we gathered contig-reference sequence (prot) alignments before assigning one best aligned reference to each contig.
-    3. Finally, we lined the contigs up according to the their cognate reference sequence’s position in the MSA.
+1. Firstly we begin by generating a MSA of protein reference sequences.
+2. Thereafter, using MEGAN, we gathered contig-reference sequence (prot) alignments before assigning one best aligned reference to each contig.
+3. Finally, we lined the contigs up according to the their cognate reference sequence’s position in the MSA.
 
 #### Window of diversity
 
-    1. We ran a 200 bp sliding window across the implicit contig alignment to find a region with capturing the most number of contigs also known as a maximum diversity region (MDR)
+1. We ran a 200 bp sliding window across the implicit contig alignment to find a region with capturing the most number of contigs also known as a maximum diversity region (MDR)
 
 ### Simulation
 
 With the simulation, we looked specifcally at Single Copy Genes (SCGs) to see if the method "worked".
 
-    1. If the genes have been successfully assembled
-    2. If homology search + LCA was able to correctly identify these assembled genes to the correct genus.
+1. If the genes have been successfully assembled
+2. If homology search + LCA was able to correctly identify these assembled genes to the correct genus.
 
 Briefly, the conclusions made from this simulation was that the process leads to a overestimation in the number of genes due to duplication of genes introduced as an artifact of the assembly process.
 
