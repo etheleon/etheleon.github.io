@@ -15,7 +15,8 @@ highlighter: rouge
 sass:
   sass_dir: _sass
   style: compressed
-gems:
+plugins:
+  - jekyll-github-metadata
   - jekyll-sitemap
   - jekyll-gist
   #- jekyll-feed
@@ -58,3 +59,6 @@ owner:
     ad-slot:
   bing-verify:
 
+
+github: [metadata]
+repository: etheleon/etheleon.github.io
