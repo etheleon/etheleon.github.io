@@ -13,11 +13,13 @@ To check if the post works run the following
 
 ```
 export JEKYLL_VERSION=3.8
+export JEKYLL_GITHUB_TOKEN=<api_key>
 docker run --rm \
+  -e
   --volume=$PWD:/srv/jekyll \
   -p 35729:35729 -p 4000:4000 \
   -it jekyll/builder:$JEKYLL_VERSION \
-  jekyll build
+  jekyll serve --livereload
 ```
 
 ## Getting Started
