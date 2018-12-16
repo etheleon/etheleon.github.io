@@ -18,15 +18,15 @@ image:
 
 # Tidying up pandas? 
 
-As an academic, often *the* go to  /lingua franca/ for data science might not always be python but R. This is especially so if you’re coming from a Computational Biology/Bioinformatics/Systems Biology or the Statistics Department. 
+As an academic, often *the* go to  _lingua franca_ for data science might not always be python but R. This is especially so if you’re coming from a Computational Biology/Bioinformatics/Systems Biology or the Statistics Department. 
 
 Likelihood will be you’ll be hooked on the famous `tidyverse` meta-package, which includes `dplyr` (previously ply(e)r), `lubridate` (time-series) and `tidyr` for example. 
 
 > PS. As I wrote this article I realised it isn’t just `tidyverse`, but the whole R ecosystem which I’ve come to love whist doing metagenomics and computational biology in general. 
 
-Nowadays, take no more than five steps you’ll see how much *python* and `pandas`  is used. For the uninitiated, `pandas` is /the/ data frame module for python, several other packages like [datatable](https://datatable.readthedocs.io/en/latest/using-datatable.html) which is heavily inspired by R’s own [datatable]([Introduction to data.table](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html) library exists as well. 
+Nowadays, take no more than five steps you’ll see how much *python* and `pandas`  is used. For the uninitiated, `pandas` is _the_ data frame module for python, several other packages like [datatable](https://datatable.readthedocs.io/en/latest/using-datatable.html) which is heavily inspired by R’s own [datatable]([Introduction to data.table](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html) library exists as well. 
 
-Additionally, something which caught me off guard was SQL, postgreSQL and it’s dialects eg. Redshift and [KSQL: Streaming SQL for Apache Kafka | Confluent](https://www.confluent.io/product/ksql/) for Kafka. 
+Additionally, something which caught me off guard was SQL, postgreSQL and it’s dialects eg. Redshift and [KSQL](https://www.confluent.io/product/ksql/) for Kafka. 
 
 In his talk, [Hadley Wickham](https://youtu.be/dWjSYqI7Vog?t=2m7s),  mentioned what we really need for table manipulation are just a handful of functions. 
 
@@ -70,7 +70,7 @@ We will be using the famous. [Iris flower datasets](https://en.wikipedia.org/wik
 
 ```python
 import seaborn as sns
-iris = sns.load_data(“iris”)  # imports the dataset as a pandas DataFrame as compared to sklearn's datasets which are numpy arrays
+iris = sns.load_data("iris")  # imports the dataset as a pandas DataFrame as compared to sklearn's datasets which are numpy arrays
 ```
 
 ```r
@@ -118,7 +118,7 @@ However, `pd.DataFrame.query()` maps more closely with `dplyr::filter()`
 . 
 ```python
 iris. \
-    query(“sepal_width > @cutoff”)  # this is using a SQL like language
+    query("sepal_width > @cutoff”)  # this is using a SQL like language
 ```
 
 > One downside of using this is linters like pep8 and flake8 will complain the the `cutoff` variable although declared is not used as they are unable to recognise the use of `cutoff` inside the query quoted string. 
@@ -139,15 +139,15 @@ flights.filter('distance > 1000')
 this is reminiscent of SQL’s `select`  keyword which allows you to choose columns. 
 ```r
 iris %>% 
-    select(sepal.width,sepal.length)
+    select(sepal.width, sepal.length)
 ```
 
 ```python
 iris \
-    .loc[:5, [[“sepal_width”, “seapl_length”]]]  # selects the 1st 5 rows 
+    .loc[:5, [["sepal_width", "sepal_length"]]]  # selects the 1st 5 rows 
 ```
 
-Initially I chose the  `df[[‘col1’, ‘col2’]]`  pattern. But realised we cannot do slices of the columns similar to `select`.  
+Initially I chose the  `df[['col1', 'col2']]`  pattern. But realised we cannot do slices of the columns similar to `select`.  
 
 ```r
 iris %>% 
@@ -156,7 +156,7 @@ iris %>%
 
 ```python
 iris. \
-    loc[:, “sepal_length”:”petal_width”]
+    loc[:, "sepal_length":"petal_width"]
 ```
 
 
@@ -175,7 +175,7 @@ df %>% select(-col1)
 You have to use the `.drop()` method. 
 
 ```python
-df.drop(columns=[“col1”])
+df.drop(columns=["col1"])
 ```
 
 > Note i had to add the param `columns` because drop can not only be used to drop columns, the method can also drop rows based on their index. 
@@ -198,7 +198,7 @@ df %>% arrange(col1, descreasing=TRUE)
 
 ```python
 df \
-    .sort_values(by=“col1”, ascending=False)  # everything is reversed in python fml. 
+    .sort_values(by="col1", ascending=False)  # everything is reversed in python fml. 
 ```
 
 ## Mutate
@@ -217,7 +217,7 @@ df %>% mutate(
 ```python 
 iris.assign(
     new = iris.sepal_width / iris.sepal, 
-    newcol = lambda x: x[“col”] + 1
+    newcol = lambda x: x["col"] + 1
 )
 ```
 
@@ -416,7 +416,7 @@ from IPython.core.debugger import set_trace()
 
 (
     iris
-        .groupby(“species”)
+        .groupby("species")
         .apply(lambda groupedDF: set_trace())
 )
 ```
