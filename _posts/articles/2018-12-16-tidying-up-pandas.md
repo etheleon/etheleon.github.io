@@ -70,7 +70,7 @@ In fact, Google’s Facets behaves somewhat like this as well (see image below).
 
 Thus, in this post I’ll try my best to demonstrate 1-to-1 mappings of the `tidyverse` vocabularies with `pandas` methods.
 
-For demonstraiton, We will be using the famous [Iris flower dataset](https://en.wikipedia.org/wiki/Iris_flower_data_set). 
+For demonstration, We will be using the famous [Iris flower dataset](https://en.wikipedia.org/wiki/Iris_flower_data_set). 
 
 ```python
 # python
@@ -120,7 +120,7 @@ iris[iris.sepal_width > cutoff]
 However, `pd.DataFrame.query()` maps more closely with `dplyr::filter()`. 
 
 ```python
-# R
+# Python
 
 iris. \
     query("sepal_width > @cutoff”)  # this is using a SQL like language
@@ -142,7 +142,7 @@ flights.filter('distance > 1000')
 
 ## Select 
 
-this is reminiscent of SQL’s `select` keyword which allows you to choose columns. 
+This is reminiscent of SQL’s `select` keyword which allows you to choose columns. 
 
 ```r
 # R
@@ -671,7 +671,7 @@ somefunction(one=2, two=3, four=5, name="wesley")
 
 There's many ways to do thing in pandas more so than the tidyverse way, and I wish this was clearer.
 
-Additionally, something which caught me off guard aftering coming to Honestbee was the amount of SQL I need.
+Additionally, something which caught me off guard after coming to Honestbee was the amount of SQL I need.
 
 For example postgreSQL to query RDS and it’s dialect for querying Redshift, [KSQL](https://www.confluent.io/product/ksql/) for querying data streams via Kafka and Athena's query language build on top of presto DB for querying S3, where most of the data use to exist in parquet files.
 
