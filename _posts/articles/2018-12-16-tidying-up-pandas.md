@@ -18,17 +18,19 @@ image:
 
 For those who use pandas on a day to day basis, the first thing you'll probably notice is there are more ways than one to do almost everything. 
 
-The purpose of this article is to try and order this by drawing inspiration from R's `tidyverse`.
+The purpose of this article is to limit ths somehow by drawing inspiration from R's `tidyverse`.
 
 # Tidying up pandas? 
 
-As an academic, often enuough the go to  _lingua franca_ for data science is R. Especially if you’re coming from Computational Biology/Bioinformatics or Statistics. 
+As an academic, often enough the go to  _lingua franca_ for data science is R. Especially if you’re coming from Computational Biology/Bioinformatics or Statistics. 
 
-And the Likelihood will be you’ll be hooked on the famous `tidyverse` meta-package, which includes `dplyr` (previously ply(e)r), `lubridate` (time-series) and `tidyr`. 
+And likely you’ll be hooked on the famous `tidyverse` meta-package, which includes `dplyr` (previously ply(e)r), `lubridate` (time-series) and `tidyr`. 
 
 > PS. As I am writing this article I realised it isn’t just `tidyverse`, but the whole R ecosystem which I’ve come to love whist doing metagenomics and computational biology in general. 
 
-For the benefit of those who started from R and, `pandas` is _the_ dataframe module for python, several other packages like [datatable](https://datatable.readthedocs.io/en/latest/using-datatable.html) exists and is is heavily inspired by R’s own [datatable](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html). 
+For the benefit of those who started from R, `pandas` is _the_ dataframe module for python, several other packages like [datatable](https://datatable.readthedocs.io/en/latest/using-datatable.html) exists and is is heavily inspired by R’s own [datatable](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html). 
+
+Now back to how tidyverse specialpy dplyr organises dataframe manipulation. 
 
 In his talk, [Hadley Wickham](https://youtu.be/dWjSYqI7Vog?t=2m7s), mentioned what we really need for table manipulation are just a handful of functions. 
 
@@ -40,7 +42,7 @@ In his talk, [Hadley Wickham](https://youtu.be/dWjSYqI7Vog?t=2m7s), mentioned wh
 * summarise
 * merge
 
-Although, I would argue you need just a bit more, for example knowing R’s family of `apply` functions will help you go a long way. Or a couple of summary statistics functions like `summary` or  `str` , although nowadays I use  `skimr`’s `skim`  a lot. 
+Although, I would argue you need just a bit more. For example, knowing R’s family of `apply` functions will help you go a long way. Or a couple of summary statistics functions like `summary` or  `str` , although nowadays I use  `skimr::skim`  a lot. 
 
 
 ```r
@@ -85,7 +87,6 @@ The first thing I usually do when I import a table is to run the `str` function 
 # iris is already loaded into the environment by default in R
 
 str(iris)
-skimr::skim(iris)
 ```
 
 ```python
@@ -125,7 +126,7 @@ iris. \
     query("sepal_width > @cutoff”)  # this is using a SQL like language
 ```
 
-> One downside of using this is linters like which follows the `pep8` convention like `flake8` will complain about the `cutoff` variable not being used although it is declared. This is because the linters are unable to recognise the use of `cutoff` inside the query quoted string. 
+> One downside of using this is linters which follows the `pep8` convention like `flake8` will complain about the `cutoff` variable not being used although it has already been declared. This is because the linters are unable to recognise the use of `cutoff` inside the query quoted string. 
 
 Surprisingly, filter makes a return in pySpark. :) 
 
@@ -157,7 +158,7 @@ iris \
     .loc[:5, [["sepal_width", "sepal_length"]]]  # selects the 1st 5 rows 
 ```
 
-Initially, I though the following `df[['col1', 'col2']]`  pattern would be a good map. But realised we cannot do slices of the columns similar to `select`.  
+Initially, I thought the following `df[['col1', 'col2']]`  pattern would be a good map. But quickly realised we cannot do slices of the columns similar to `select`.  
 
 ```r
 # R
@@ -174,7 +175,7 @@ iris. \
 ```
 
 
-A thing to note about the `loc` method is that it could return a series instead of a DataFrame when the selection is just one row
+A thing to note about the `loc` method is that it could return a series instead of a DataFrame when the selection is just one row.
 
 ```
 # Python
@@ -198,7 +199,7 @@ You have to use the `.drop()` method.
 df.drop(columns=["col1"])
 ```
 
-> Note i had to add the param `columns` because drop can not only be used to drop columns, the method can also drop rows based on their index. 
+> Note I had to add the param `columns` because drop can not only be used to drop columns, the method can also drop rows based on their index. 
 
 Like `filter`,  `select` is also used in pySpark! 
 
