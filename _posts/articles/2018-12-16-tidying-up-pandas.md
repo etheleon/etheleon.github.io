@@ -16,15 +16,15 @@ image:
   creditlink: http://etheleon.github.io
 ---
 
-For those who use pandas on a day to day basis, the first thing you'll probably notice is there are more ways than one to do almost everything. 
+For those who use python's pandas model daily, the first thing you would notice is there are often more ways than one to do almost everything. 
 
-The purpose of this article is to limit this somehow by drawing inspiration from R's `tidyverse` package. 
+The purpose of this article is to demonstrate how we can limit this by drawing inspiration from R's `dplyr` and `tidyverse` libraries
 
 # Tidying up pandas? 
 
 As an academic, often enough the go to  _lingua franca_ for data science is R. Especially if you’re coming from Computational Biology/Bioinformatics or Statistics. 
 
-And likely you’ll be hooked on the famous `tidyverse` meta-package, which includes `dplyr` (previously ply(e)r), `lubridate` (time-series) and `tidyr`. 
+And likely you’ll be hooked on the famous `tidyverse` meta-package, which includes `dplyr` (previously `plyr` for ply(e)r), `lubridate` (time-series) and `tidyr`. 
 
 > PS. As I am writing this article I realised it isn’t just `tidyverse`, but the whole R ecosystem which I’ve come to love whist doing metagenomics and computational biology in general. 
 
@@ -42,7 +42,7 @@ In his talk, [Hadley Wickham](https://youtu.be/dWjSYqI7Vog?t=2m7s), mentioned wh
 * summarise
 * merge
 
-Although, I would argue you need just a bit more. For example, knowing R’s family of `apply` functions will help  tonnes. Or a couple of summary statistics functions like `summary` or  `str` , although nowadays I use  `skimr::skim`  a lot. 
+Although, I would argue you need just a bit more. For example, knowing R’s family of `apply` functions will help  tonnes. Or a couple of summary statistics functions like `summary` or  `str` , although nowadays I use  `skimr::skim` a lot. 
 
 
 ```r
@@ -64,7 +64,7 @@ skim(iris)
 ##   Sepal.Width       0      150 150 3.06 0.44 2   2.8 3    3.3  4.4 ▁▂▅▇▃▂▁▁
 ```
 
-Google’s Facets behaves somewhat like this as well (see image below)
+In fact, Google’s Facets behaves somewhat like this as well (see image below).
 
 ![Facets](https://i.imgur.com/F7yQLnz.png)
 
@@ -74,17 +74,17 @@ For demonstraiton, We will be using the famous [Iris flower dataset](https://en.
 
 ```python
 # python
+
 import seaborn as sns
 iris = sns.load_data("iris")  
-
-# imports the dataset as a pandas DataFrame as compared to sklearn's datasets which are numpy arrays
 ```
+
+I've chosen to imports the iris data using seaborn rather than sklearn's datasets which are numpy arrays
 
 The first thing I usually do when I import a table is to run the `str` function on the table
 
 ```r
-# R
-# iris is already loaded into the environment by default in R
+# R (iris is already loaded by default)
 
 str(iris)
 ```
@@ -117,8 +117,8 @@ cutoff = 30
 iris[iris.sepal_width > cutoff]
 ```
 
-However, `pd.DataFrame.query()` maps more closely with `dplyr::filter()` 
-. 
+However, `pd.DataFrame.query()` maps more closely with `dplyr::filter()`. 
+
 ```python
 # R
 
@@ -131,7 +131,7 @@ iris. \
 Surprisingly, filter makes a return in pySpark. :) 
 
 ```python
-# python pyspark
+# python (pyspark)
 
 type(flights)
 pyspark.sql.dataframe.DataFrame
@@ -163,15 +163,13 @@ Initially, I thought the following `df[['col1', 'col2']]`  pattern would be a go
 ```r
 # R
 
-iris %>% 
-    select(Sepal.Length:Petal.Width)
+iris %>% select(Sepal.Length:Petal.Width)
 ```
 
 ```python
 # Python 
 
-iris. \
-    loc[:, "sepal_length":"petal_width"]
+iris.loc[:, "sepal_length":"petal_width"]
 ```
 
 
@@ -180,7 +178,7 @@ A thing to note about the `loc` method is that it could return a series instead 
 ```
 # Python
 
-iris.loc[1, :]  # selects the first row and returns a pandas.Series
+iris.loc[1, :]  # returns a Series
 iris.loc[[1],:] # returns a dataframe
 ```
 
@@ -205,7 +203,7 @@ df.drop(columns=["col1"])
 Like `filter`,  `select` is also used in pySpark! 
 
 ```python
-# pySpark
+# python (pySpark)
 
 df.select("xyz").show() # shows the column xyz of the spark dataframe.
 
@@ -231,6 +229,7 @@ df.sort_values(by="col1", ascending=False)  # everything is reversed in python f
 ## Mutate
 
 `dplyr`’s `mutate` was really an upgrade from R’s `apply`. 
+
 > **NOTE**: Other applies which is useful in R for example includes `mapply` and `lapply`
 
 
@@ -252,13 +251,13 @@ iris.assign(
 )
 ```
 
-`tidyverse`’s `mutate` function by default takes the whole column and does vectorised operations on it. If you want to apply the function row by row, you’ll have to couple `rowwise` with `mutate`.
+`tidyverse`’s `mutate` function by default takes the whole column and does vectorised operations on it.
+If you want to apply the function row by row, you’ll have to couple `rowwise` with `mutate`.
 
 ```R
-
 # R
 
-# my_function does not take vectorised input of the entire row
+# my_function does not take vectorised input of the entire column
 
 # this will fail
 iris %>% 
@@ -270,7 +269,7 @@ iris %>%
     mutate(new_column = my_function(sepal.width, sepal.length))
 ```
 
-To achieve the same using the `.assign` method you can nest an `apply`inside the function. 
+To achieve the same using the `.assign` method you can nest an `apply` inside the function. 
 
 ```python
 # Python 
@@ -283,11 +282,10 @@ def do_something_string(col):
         value = "not_setosa"
     return value
 
-def dosomething(df):
-    return df.species.apply(do_something_string)
-
-iris = iris.assign(transformed_species = lambda df: dosomething(df))
-iris
+iris = iris.assign(
+	transformed_species = lambda df: df["species"] \
+		.apply(do_something_string)
+	)
 ```
 
 If you're lazy, you could just chain two anoymous functions together.
@@ -310,7 +308,7 @@ Where the value of `MARGIN` takes either `1` or `2` for (rows, columns), ie. if 
 
 However, in pandas axis refers to what values (index i or columns j) will be used for the applied functions input parameter’s index. 
 
-be using the  `0` refers to the DataFrame’s index and axis `1` refers to the columns.
+be using the `0` refers to the DataFrame’s index and axis `1` refers to the columns.
 
 ![Imgur](https://i.imgur.com/uNOGXVT.png)
 
@@ -353,10 +351,11 @@ import swifter
 iris.sepal_width.swifter.apply(lambda x : x**2) 
 ```
 
-In R, one of the common idioms, which i keep going back to for a parallel version of `groupby` is as follows:
+In R, one of the common idioms, which I keep going back to for a parallel version of `groupby` is as follows:
 
 ```r
 # R
+
 unique_list %>% 
     lapply(function(x){ 
         ...
@@ -373,6 +372,7 @@ Additionally, there’s `mclapply` from the `parallel` /`snow` library in R.
 
 ```r
 # R
+
 ncores = 10  # the number of cores
 unique_list %>% 
     mclapply(function(x){ 
@@ -386,7 +386,7 @@ unique_list %>%
 Separately, in pySpark, you can split the whole table into partitions and do the manipulations in parallel.
 
 ```python
-# python pyspark
+# Python (pyspark)
 
 dd.from_pandas(my_df,npartitions=nCores).\
    map_partitions(
@@ -399,7 +399,7 @@ dd.from_pandas(my_df,npartitions=nCores).\
 To achieve the same, what we can use the `dask`, or a higher level wrapper from the `swiftapply` library. 
 
 ```python
-# python
+# Python
 
 # you can easily vectorise the example using by adding the `swift` method before `.apply`
 series.swift.apply()
@@ -439,6 +439,7 @@ The same series of transformation written in Python would follow:
 
 ```
 # Python
+
 def transform1(x):
     return max(x)-min(x)
         
@@ -462,11 +463,11 @@ py_mt
    
 ```r
 # R
+
 df %>% 
-    group_by(col) %>% summarise(my_new_column = do_something(some_col))
+    group_by(col) %>% 
+    summarise(my_new_column = do_something(some_col))
 ```
-
-
 
 ## Join
 
@@ -478,12 +479,16 @@ Along side the other `join` functions: `left_join`, `right_join`, `inner_join` a
 ## Inplace
 
 In R there’s the compound assignment pipe-operator  `%<>%`, which is similar to the `inplace=True` argument in some pandas functions *but not all*.  :(
+Apparently Pandas is going to remove inplace altogether...
+
 
 ### Debugging
 
 In R, we have the `browser()` function. 
 
 ```R
+# R
+
 unique(iris$species) %>%
     lapply(function(s){
         browser()
@@ -512,6 +517,8 @@ Last but not least if you really need to use some R function you could always re
 
 
 ```python
+# python
+
 import rpy2                #  imports the library
 %load_ext rpy2.ipython     #  load the magic
 ```
@@ -542,6 +549,8 @@ If you need outputs to be printed like a normal pandas DataFrame, you can you th
 In R, one nifty trick you can do is to pass arguments to inner functions without ever having to define them in the outer function’s function signature.
 
 ```r
+# R
+
 #' Simple function which takes two parameters `one` and `two` and elipisis `...`, 
 somefunction = function(one, two, ...){
    three =  one + two 
@@ -565,6 +574,8 @@ Firstly, the double asterisks `**` is called *unpack* operator (it’s placed be
 Most articles which describe the unpack operator will start off with **this** explanation: where dictionaries are used to pass functions their parameters.
 
 ```python
+# Python
+
 adictionary = {
     'first' : 1,
     'second': 2
@@ -583,15 +594,19 @@ But you could also twist this around and set `**kwargs` as a function signature.
 The signature-value pairs are wrapped into a dictionary named `kwargs` which is accessible inside the function. 
 
 ```python
+# Python
+
 # dummy function which prints `kwargs`
 def some_function (**kwargs): print(kwargs)
 
 some_function(first=1, second=2)
 ```
 
-The previous two cases are not exclusive, you could actually ~***mix***~ them together. Ie. have named signatures as well as a  `**kwargs`
+The previous two cases are not exclusive, you could actually ~***mix***~ them together. Ie. have named signatures as well as a  `**kwargs`.
 
 ```python
+# Python
+
 adictionary = {
     'first' : 1,
     'second': 2,
@@ -606,17 +621,15 @@ print(some_function(**adictionary))
 ```
 
 
-The output will be
-```
-{'useless_value': 'wesley'}
-3
-```
+The output will be: `{'useless_value': 'wesley'}`
 
 It allows a python function to accept as many function signatures as you supply it. Those which are already defined during the declaration of the function would be directly used. And those which do not appear within them can be accessed from kwargs.
 
 By putting the `**kwargs` as an argument in the inner function, you’re basically unwrapping the dictionary into the function params.
 
 ```python
+# Python
+
 def somefunction(one, two, **kwargs):
     print(f"outer function:\n\t{kwargs}")
     three = one + two
@@ -640,6 +653,7 @@ inside kwargs:
 Lets now compare this with the original R elipsis
 
 ```r
+# R
 #' Simple function which takes two parameters `one` and `two` and elipisis `...`, 
 somefunction = function(one, two, ...){
    three =  one + two 
@@ -661,6 +675,6 @@ Additionally, something which caught me off guard aftering coming to Honestbee w
 
 For example postgreSQL to query RDS and it’s dialect for querying Redshift, [KSQL](https://www.confluent.io/product/ksql/) for querying data streams via Kafka and Athena's query language build on top of presto DB for querying S3, where most of the data use to exist in parquet files.
 
-The shows one big deviation from academia where data in a company is usually stored in a database / datalake/ datastream whereas in academia its usually just one big flat data file. 
+The shows one big deviation from academia where data in a company is usually stored in a database / datalake / datastream whereas in academia its usually just one big flat data file. 
 
 We've come to the ending of this attempt at mapping tidyverse vocabularies to pandas, hope you've found this informative and useful! See you guys soon!
