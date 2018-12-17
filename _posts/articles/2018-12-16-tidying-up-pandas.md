@@ -18,7 +18,7 @@ image:
 
 For those who use pandas on a day to day basis, the first thing you'll probably notice is there are more ways than one to do almost everything. 
 
-The purpose of this article is to limit ths somehow by drawing inspiration from R's `tidyverse`.
+The purpose of this article is to limit this somehow by drawing inspiration from R's `tidyverse` package. 
 
 # Tidying up pandas? 
 
@@ -30,7 +30,7 @@ And likely you’ll be hooked on the famous `tidyverse` meta-package, which incl
 
 For the benefit of those who started from R, `pandas` is _the_ dataframe module for python, several other packages like [datatable](https://datatable.readthedocs.io/en/latest/using-datatable.html) exists and is is heavily inspired by R’s own [datatable](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html). 
 
-Now back to how tidyverse specialpy dplyr organises dataframe manipulation. 
+Now back to how tidyverse specifically dplyr organises dataframe manipulation. 
 
 In his talk, [Hadley Wickham](https://youtu.be/dWjSYqI7Vog?t=2m7s), mentioned what we really need for table manipulation are just a handful of functions. 
 
@@ -42,7 +42,7 @@ In his talk, [Hadley Wickham](https://youtu.be/dWjSYqI7Vog?t=2m7s), mentioned wh
 * summarise
 * merge
 
-Although, I would argue you need just a bit more. For example, knowing R’s family of `apply` functions will help you go a long way. Or a couple of summary statistics functions like `summary` or  `str` , although nowadays I use  `skimr::skim`  a lot. 
+Although, I would argue you need just a bit more. For example, knowing R’s family of `apply` functions will help  tonnes. Or a couple of summary statistics functions like `summary` or  `str` , although nowadays I use  `skimr::skim`  a lot. 
 
 
 ```r
@@ -175,12 +175,13 @@ iris. \
 ```
 
 
-A thing to note about the `loc` method is that it could return a series instead of a DataFrame when the selection is just one row.
+A thing to note about the `loc` method is that it could return a series instead of a DataFrame when the selection is just one row. so you'll have to slice it in order to return a dataframe.
 
 ```
 # Python
 
 iris.loc[1, :]  # selects the first row and returns a pandas.Series
+iris.loc[[1],:] # returns a dataframe
 ```
 
 But the really awesome thing about `select`, function its ability to /unselect/ columns which is missing in the `loc` method. 
@@ -213,7 +214,7 @@ df.select(df.xyz)
 ```
 
 ## Arrange
-The arrange function lets one sort the table by a particular column 
+The arrange function lets one sort the table by a particular column. 
 
 ```r
 # R
@@ -235,6 +236,7 @@ df.sort_values(by="col1", ascending=False)  # everything is reversed in python f
 
 ```r
 # R
+
 df %>% mutate(
     new = something / col2, 
     newcol = col+1
@@ -253,6 +255,9 @@ iris.assign(
 `tidyverse`’s `mutate` function by default takes the whole column and does vectorised operations on it. If you want to apply the function row by row, you’ll have to couple `rowwise` with `mutate`.
 
 ```R
+
+# R
+
 # my_function does not take vectorised input of the entire row
 
 # this will fail
@@ -268,6 +273,8 @@ iris %>%
 To achieve the same using the `.assign` method you can nest an `apply`inside the function. 
 
 ```python
+# Python 
+
 def do_something_string(col):
     #set_trace()
     if re.search(r".*(osa)$", col):
@@ -286,6 +293,8 @@ iris
 If you're lazy, you could just chain two anoymous functions together.
 
 ```python
+# Python 
+
 iris = iris.assign(
     transformed_species = lambda df: df.species.apply(do_something_string))
 ````
@@ -308,6 +317,8 @@ be using the  `0` refers to the DataFrame’s index and axis `1` refers to the c
 So if you wanted to carry out row wise operations you could set axis to 0.
 
 ```r
+# R
+
 df %>% 
     apply(0, function(row){
         ...
