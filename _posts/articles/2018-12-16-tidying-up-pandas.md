@@ -16,7 +16,7 @@ image:
   creditlink: http://etheleon.github.io
 ---
 
-For those who use python's pandas model daily, the first thing you would notice is there are often more ways than one to do almost everything. 
+For those who use python's pandas module daily, the first thing you would notice is there are often more ways than one to do almost everything. 
 
 The purpose of this article is to demonstrate how we can limit this by drawing inspiration from R's `dplyr` and `tidyverse` libraries
 
