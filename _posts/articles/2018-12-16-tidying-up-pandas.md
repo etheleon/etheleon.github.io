@@ -16,19 +16,21 @@ image:
   creditlink: http://etheleon.github.io
 ---
 
+For those who use pandas on a day to day basis, the first thing you'll probably notice is there are more ways than one to do almost everything. 
+
+The purpose of this article is to try and order this by drawing inspiration from R's `tidyverse`.
+
 # Tidying up pandas? 
 
-As an academic, often *the* go to  _lingua franca_ for data science might not always be python but R. This is especially so if you’re coming from a Computational Biology/Bioinformatics/Systems Biology or the Statistics Department. 
+As an academic, often enuough the go to  _lingua franca_ for data science is R. Especially if you’re coming from Computational Biology/Bioinformatics or Statistics. 
 
-Likelihood will be you’ll be hooked on the famous `tidyverse` meta-package, which includes `dplyr` (previously ply(e)r), `lubridate` (time-series) and `tidyr` for example. 
+And the Likelihood will be you’ll be hooked on the famous `tidyverse` meta-package, which includes `dplyr` (previously ply(e)r), `lubridate` (time-series) and `tidyr`. 
 
-> PS. As I wrote this article I realised it isn’t just `tidyverse`, but the whole R ecosystem which I’ve come to love whist doing metagenomics and computational biology in general. 
+> PS. As I am writing this article I realised it isn’t just `tidyverse`, but the whole R ecosystem which I’ve come to love whist doing metagenomics and computational biology in general. 
 
-Nowadays, take no more than five steps you’ll see how much *python* and `pandas`  is used. For the uninitiated, `pandas` is _the_ data frame module for python, several other packages like [datatable](https://datatable.readthedocs.io/en/latest/using-datatable.html) which is heavily inspired by R’s own [datatable]([Introduction to data.table](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html) library exists as well. 
+For the benefit of those who started from R and, `pandas` is _the_ dataframe module for python, several other packages like [datatable](https://datatable.readthedocs.io/en/latest/using-datatable.html) exists and is is heavily inspired by R’s own [datatable](https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html). 
 
-Additionally, something which caught me off guard was SQL, postgreSQL and it’s dialects eg. Redshift and [KSQL](https://www.confluent.io/product/ksql/) for Kafka. 
-
-In his talk, [Hadley Wickham](https://youtu.be/dWjSYqI7Vog?t=2m7s),  mentioned what we really need for table manipulation are just a handful of functions. 
+In his talk, [Hadley Wickham](https://youtu.be/dWjSYqI7Vog?t=2m7s), mentioned what we really need for table manipulation are just a handful of functions. 
 
 * filter
 * select
@@ -60,48 +62,46 @@ skim(iris)
 ##   Sepal.Width       0      150 150 3.06 0.44 2   2.8 3    3.3  4.4 ▁▂▅▇▃▂▁▁
 ```
 
-google’s Facets (see image below works kind of like this as well)
+Google’s Facets behaves somewhat like this as well (see image below)
 
 ![Facets](https://i.imgur.com/F7yQLnz.png)
 
-Thus I’ve decided to write this post where I’ll try my best to demonstrate 1-to-1 mappings of the `tidyverse` vocabulary with `pandas` methods.
+Thus, in this post I’ll try my best to demonstrate 1-to-1 mappings of the `tidyverse` vocabularies with `pandas` methods.
 
-We will be using the famous. [Iris flower datasets](https://en.wikipedia.org/wiki/Iris_flower_data_set). 
+For demonstraiton, We will be using the famous [Iris flower dataset](https://en.wikipedia.org/wiki/Iris_flower_data_set). 
 
 ```python
+# python
 import seaborn as sns
-iris = sns.load_data("iris")  # imports the dataset as a pandas DataFrame as compared to sklearn's datasets which are numpy arrays
-```
+iris = sns.load_data("iris")  
 
-```r
-# iris is already loaded into the environment by default in R
-iris
+# imports the dataset as a pandas DataFrame as compared to sklearn's datasets which are numpy arrays
 ```
 
 The first thing I usually do when I import a table is to run the `str` function on the table
 
 ```r
+# R
+# iris is already loaded into the environment by default in R
+
 str(iris)
-# use skimr
-skim(iris)
+skimr::skim(iris)
 ```
 
 ```python
+# python
+
 iris.info(null_counts=True)  
-# if the number of rows are too much, pandas will not do the count, so I have to forcibly set `null_counts` to `True`.
-```
-
-But recently I’ve been really seduced by the `skimr` package in R. 
-
-```r
-library(skimr)  # from ROpenSci
-iris %>% skim
+# if the number of rows are too much, pandas will not do the count, 
+# so I have to forcibly set `null_counts` to `True`.
 ```
 
 ## Filter
 The closest method similar to R’s `filter` is  `pd.query`. 
 
 ```r
+# R
+
 cutoff = 30
 iris %>% 
     filter(sepal.width > cutoff)
@@ -110,6 +110,8 @@ iris %>%
 There’s two ways to do this in python. The first is probably what you’ll find most python users using
 
 ```python
+# python
+
 cutoff = 30
 iris[iris.sepal_width > cutoff]
 ```
@@ -117,44 +119,56 @@ iris[iris.sepal_width > cutoff]
 However, `pd.DataFrame.query()` maps more closely with `dplyr::filter()` 
 . 
 ```python
+# R
+
 iris. \
     query("sepal_width > @cutoff”)  # this is using a SQL like language
 ```
 
-> One downside of using this is linters like pep8 and flake8 will complain the the `cutoff` variable although declared is not used as they are unable to recognise the use of `cutoff` inside the query quoted string. 
+> One downside of using this is linters like which follows the `pep8` convention like `flake8` will complain about the `cutoff` variable not being used although it is declared. This is because the linters are unable to recognise the use of `cutoff` inside the query quoted string. 
 
 Surprisingly, filter makes a return in pySpark. :) 
 
 ```python
+# python pyspark
+
 type(flights)
 pyspark.sql.dataframe.DataFrame
-```
 
-```python
 # filters flights which are > 1000 miles long
 flights.filter('distance > 1000')
 ```
 
 ## Select 
-this is reminiscent of SQL’s `select`  keyword which allows you to choose columns. 
+
+this is reminiscent of SQL’s `select` keyword which allows you to choose columns. 
+
 ```r
+# R
+
 iris %>% 
     select(sepal.width, sepal.length)
 ```
 
 ```python
+# Python
+
 iris \
     .loc[:5, [["sepal_width", "sepal_length"]]]  # selects the 1st 5 rows 
 ```
 
-Initially I chose the  `df[['col1', 'col2']]`  pattern. But realised we cannot do slices of the columns similar to `select`.  
+Initially, I though the following `df[['col1', 'col2']]`  pattern would be a good map. But realised we cannot do slices of the columns similar to `select`.  
 
 ```r
+# R
+
 iris %>% 
     select(Sepal.Length:Petal.Width)
 ```
 
 ```python
+# Python 
+
 iris. \
     loc[:, "sepal_length":"petal_width"]
 ```
@@ -163,18 +177,24 @@ iris. \
 A thing to note about the `loc` method is that it could return a series instead of a DataFrame when the selection is just one row
 
 ```
-iris.loc[1, :] #selects the first row and returns a pandas.Series
+# Python
+
+iris.loc[1, :]  # selects the first row and returns a pandas.Series
 ```
 
 But the really awesome thing about `select`, function its ability to /unselect/ columns which is missing in the `loc` method. 
 
 ```r
+# R
+
 df %>% select(-col1) 
 ```
 
 You have to use the `.drop()` method. 
 
 ```python
+# Python
+
 df.drop(columns=["col1"])
 ```
 
@@ -183,6 +203,8 @@ df.drop(columns=["col1"])
 Like `filter`,  `select` is also used in pySpark! 
 
 ```python
+# pySpark
+
 df.select("xyz").show() # shows the column xyz of the spark dataframe.
 
 # alternative 
@@ -193,12 +215,15 @@ df.select(df.xyz)
 The arrange function lets one sort the table by a particular column 
 
 ```r
+# R
+
 df %>% arrange(col1, descreasing=TRUE)
 ```
 
 ```python
-df \
-    .sort_values(by="col1", ascending=False)  # everything is reversed in python fml. 
+# Python
+
+df.sort_values(by="col1", ascending=False)  # everything is reversed in python fml. 
 ```
 
 ## Mutate
@@ -208,6 +233,7 @@ df \
 
 
 ```r
+# R
 df %>% mutate(
     new = something / col2, 
     newcol = col+1
@@ -215,12 +241,13 @@ df %>% mutate(
 ```
 
 ```python 
+# Python
+
 iris.assign(
     new = iris.sepal_width / iris.sepal, 
     newcol = lambda x: x["col"] + 1
 )
 ```
-
 
 `tidyverse`’s `mutate` function by default takes the whole column and does vectorised operations on it. If you want to apply the function row by row, you’ll have to couple `rowwise` with `mutate`.
 
@@ -255,33 +282,12 @@ iris = iris.assign(transformed_species = lambda df: dosomething(df))
 iris
 ```
 
-If you're lazy, you could just chain two anoymous functions together
+If you're lazy, you could just chain two anoymous functions together.
 
 ```python
-iris = iris.assign(transformed_species = 
-                   lambda df: df["species"] \
-                       .apply(
-                           lambda col: "is_setosa" if re.search(r".*(osa)$", col) else "not_setosa")
-                  )
+iris = iris.assign(
+    transformed_species = lambda df: df.species.apply(do_something_string))
 ````
-
-However, this is slow and assign does **not** allow you carry out *row wise* computes. 
-
-One method is to iterate, to fall back on `pd.DataFrame.iterrows` .
-
-> There’s also `iteritems()` for `pd.Series`
-> 
-In pySpark, you can split the whole table into partitions. 
-
-```python
-dd.from_pandas(my_df,npartitions=nCores).\
-   map_partitions(
-      lambda df : df.apply(
-         lambda x : nearest_street(x.lat,x.lon),axis=1)).\
-   compute(get=get)
-# imports at the end
-```
-
 
 ## Apply
 From R’s `apply` help docs:
@@ -294,12 +300,13 @@ Where the value of `MARGIN` takes either `1` or `2` for (rows, columns), ie. if 
 
 However, in pandas axis refers to what values (index i or columns j) will be used for the applied functions input parameter’s index. 
 
-be using the  `0` refers to the DataFrame’s index and axis `1` refers to the columns. Which is still in line 
+be using the  `0` refers to the DataFrame’s index and axis `1` refers to the columns.
 
 ![Imgur](https://i.imgur.com/uNOGXVT.png)
 
-So if you wanted to carry out row wise operations you could  set axis to 0
-```
+So if you wanted to carry out row wise operations you could set axis to 0.
+
+```r
 df %>% 
     apply(0, function(row){
         ...
@@ -310,15 +317,19 @@ df %>%
 
 > Rarely do that now since `plyr` and later `dplyr.` 
 
-However in there no `plyr` in pandas. So we have to go back to using apply if you want row wise operations, however, the axis now is 1 not 0. I initially found this very confusing. The reason is because the *row* is a really just a `pandas.Series` whose index is the parent  pandas.DataFame’s columns. Thus in this the axis is referring to which axis to set as the index. 
+However there is no `plyr` in pandas. So we have to go back to using apply if you want row-wise operations, however, the axis now is 1 not 0. I initially found this very confusing. The reason is because the *row* is a really just a `pandas.Series` whose index is the parent  pandas.DataFame’s columns. Thus in this the axis is referring to which axis to set as the index. 
 
 ```python
+# python
+
 iris.apply(lambda row: do_something(row), axis=1)
 ```
 
-Interesting pattern which I do not use in R, is to use apply on columns, in this case pandas.Series objects
+Interesting pattern which I do not use in R, is to use apply on columns, in this case `pandas.Series` objects.
 
 ```python
+# python
+
 iris.sepal_width.apply(lambda x: x**2)
 
 #  if you want a fancy progress bar, you could use the tqdm function
@@ -330,9 +341,10 @@ import swifter
 iris.sepal_width.swifter.apply(lambda x : x**2) 
 ```
 
-In R, one of the common idioms, which i keep going back to for a parallel version of `groupby` is as follows. 
+In R, one of the common idioms, which i keep going back to for a parallel version of `groupby` is as follows:
 
 ```r
+# R
 unique_list %>% 
     lapply(function(x){ 
         ...
@@ -344,7 +356,11 @@ unique_list %>%
 
 If you want a parallel version you’ll just have to change the `lapply` to `mclapply`.
 
+
+Additionally, there’s `mclapply` from the `parallel` /`snow` library in R.
+
 ```r
+# R
 ncores = 10  # the number of cores
 unique_list %>% 
     mclapply(function(x){ 
@@ -355,39 +371,96 @@ unique_list %>%
 }, mc.cores=ncores) %>% do.call(rbind,.)
 ```
 
-Separately, I could try using `pd.iterrows`,  which is similar to the `rowwise` function coupled with mutate. 
-
-Additionally, there’s `mclapply` from the `parallel` /`snow` library in R. To achieve the same, what we can use the `dask`, or a higher level wrapper from the `swiftapply` library. 
+Separately, in pySpark, you can split the whole table into partitions and do the manipulations in parallel.
 
 ```python
+# python pyspark
+
+dd.from_pandas(my_df,npartitions=nCores).\
+   map_partitions(
+      lambda df : df.apply(
+         lambda x : nearest_street(x.lat,x.lon),axis=1)).\
+   compute(get=get)
+# imports at the end
+```
+
+To achieve the same, what we can use the `dask`, or a higher level wrapper from the `swiftapply` library. 
+
+```python
+# python
+
 # you can easily vectorise the example using by adding the `swift` method before `.apply`
 series.swift.apply()
 ```
 
 ## Group by
-the `group_by` option is very useful and the equivalent in pandas is the `.groupby` method which returns a grouped DataFrame
+
+The `.groupby` method in pandas is equivalent to R function `dplyr::group_by` returning a `DataFrameGroupBy` object.
 
 > In Tidyverse there’s the `ungroup` function to ungroup grouped DataFrames, in order to achieve the same, there does not exists a1-to-1 mappable function. 
 > 
 > One way is to complete the `groupby` -> `apply` (two-step process) and feeding apply with an identity function `apply(lambda x: x)`. Which is an identity function. 
 
-
 ## Summarise
-In pandas the equivalent of the `summarise` function is `aggregate`  abbreviated as the `agg` functions.
+
+In pandas the equivalent of the `summarise` function is `aggregate`  abbreviated as the `agg` function. And you will have to couple this with `groupby`, so it'll similar again a two step `groupby` -> `agg` transformation.
+
+```r
+# R
+
+r_mt = mtcars %>% 
+	mutate(model = rownames(mtcars)) %>%
+	select(cyl, model, hp, drat) %>%
+    filter(cyl < 8) %>%
+    group_by(cyl) %>%
+    summarise(
+        hp_mean = mean(hp), 
+        drat_mean = mean(drat),
+        drat_std = sd(drat),
+        diff = max(drat) - min(drat)
+     ) %>% 
+    arrange(drat_mean) %>%
+    as.data.frame
+```
+
+The same series of transformation written in Python would follow:
 
 ```
+# Python
+def transform1(x):
+    return max(x)-min(x)
+        
+def transform2(x):
+    return max(x)+5
+
+py_mt = (
+mtcars.
+    loc[:,["cyl", "model", "hp", "drat"]]. #select
+    query("cyl < 8").                      #filter
+    groupby("cyl").                        #group_by
+    agg(                                   #summarise, agg is an abbreviation of aggregation
+        {
+            'hp':'mean', 
+            'drat':['mean', 'std', transform1, transform2] # R wins... this sux for pandas
+        }).
+    sort_values(by=[("drat", "mean")])     #multindex sort (unique to pandas)
+)
+py_mt
+```
+   
+```r
+# R
 df %>% 
     group_by(col) %>% summarise(my_new_column = do_something(some_col))
 ```
 
-However when you run the `agg` function you 
 
-Not that you can actually chain `apply` or `agg` with `groupby`, in fact the closer function to R’s `summarise` would be agg
 
 ## Join
+
 Natively, R supports the `merge` function and similarly in Pandas there’s the `pd.merge` function. 
 
-Along side the other `join` functions: `left_join`, `right_join`, `inner_join` and `anti_join`
+Along side the other `join` functions: `left_join`, `right_join`, `inner_join` and `anti_join`.
 
 
 ## Inplace
@@ -412,7 +485,9 @@ It’ll let you *step* into the function which is extremely useful if you want t
 In Python, there’s the `set_trace`  function. 
 
 ```python 
-from IPython.core.debugger import set_trace()
+# Python
+
+from IPython.core.debugger import set_trace
 
 (
     iris
@@ -421,9 +496,7 @@ from IPython.core.debugger import set_trace()
 )
 ```
 
-With this 
-
-Last but not least if you really need to use some R function you could always rely on the `rpy2` package
+Last but not least if you really need to use some R function you could always rely on the `rpy2` package. For me I rely on this a lot for plotting. ggplot2 ftw!
 
 
 ```python
@@ -479,7 +552,6 @@ Firstly, the double asterisks `**` is called *unpack* operator (it’s placed be
 
 Most articles which describe the unpack operator will start off with **this** explanation: where dictionaries are used to pass functions their parameters.
 
-Why you would want to 
 ```python
 adictionary = {
     'first' : 1,
@@ -530,7 +602,7 @@ The output will be
 
 It allows a python function to accept as many function signatures as you supply it. Those which are already defined during the declaration of the function would be directly used. And those which do not appear within them can be accessed from kwargs.
 
-By putting the `**kwargs` as an argument in the inner function, you’re basically unwrapping the 
+By putting the `**kwargs` as an argument in the inner function, you’re basically unwrapping the dictionary into the function params.
 
 ```python
 def somefunction(one, two, **kwargs):
@@ -569,5 +641,14 @@ somefunction = function(one, two, ...){
 somefunction(one=2, two=3, four=5, name="wesley")
 ```
 
-So far what we’ve seen is unique to python.  
-￼
+## Conclusion
+
+There's many ways to do thing in pandas more so than the tidyverse way, and I wish this was clearer.
+
+Additionally, something which caught me off guard aftering coming to Honestbee was the amount of SQL I need.
+
+For example postgreSQL to query RDS and it’s dialect for querying Redshift, [KSQL](https://www.confluent.io/product/ksql/) for querying data streams via Kafka and Athena's query language build on top of presto DB for querying S3, where most of the data use to exist in parquet files.
+
+The shows one big deviation from academia where data in a company is usually stored in a database / datalake/ datastream whereas in academia its usually just one big flat data file. 
+
+We've come to the ending of this attempt at mapping tidyverse vocabularies to pandas, hope you've found this informative and useful! See you guys soon!
