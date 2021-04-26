@@ -1,7 +1,7 @@
 ---
 layout: post
-title: “Not so big queries, hitchhiker’s guide to datawarehousing with datalakes with Spark”
-excerpt: “Back to the future: Revisiting HIVE metastore, datalakes and spark”
+title: "Not so big queries, hitchhiker’s guide to datawarehousing with datalakes with Spark"
+excerpt: "Back to the future: Revisiting HIVE metastore, datalakes and spark"
 categories: articles
 tags: [spark]
 author: wesley_goi
@@ -15,6 +15,7 @@ image:
   credit: Wesley GOI
   creditlink: http://etheleon.github.io
 ---
+
 
 # Introduction
 Since the [earlier post](https://etheleon.github.io/articles/spark-joy/), I’ve defended my thesis and moved on from Honestbee to an AirAsia but covid hit and now I’ve found myself in ride hailing / superapp Grab. Time passes quickly. 
