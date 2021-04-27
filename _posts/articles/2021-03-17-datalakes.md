@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Not so big queries, hitchhiker’s guide to datawarehousing with datalakes with Spark"
-excerpt: "Back to the future: Revisiting HIVE metastore, datalakes and spark"
+title: “Not so big queries, hitchhiker’s guide to datawarehousing with datalakes with Spark”
+excerpt: “Back to the future: Revisiting HIVE metastore, datalakes and spark”
 categories: articles
 tags: [spark]
 author: wesley_goi
@@ -18,66 +18,55 @@ image:
 
 
 # Introduction
-Since the [earlier post](https://etheleon.github.io/articles/spark-joy/), I’ve defended my thesis and moved on from Honestbee to an AirAsia but covid hit and now I’ve found myself in ride hailing / superapp Grab. Time passes quickly.
+Since our [earlier post](https://etheleon.github.io/articles/spark-joy/), I’ve defended my thesis, moved on from Honestbee to AirAsia to work on dynamic/auto base pricing Ancillary products. However COVID-19 happened and I found myself in the ride hailing GrabTransport / deliveries GrabFood industry again. Time does pass by quickly.
 
 > The following post does not represent my employer and reflects my own personal views only.
 
-Once again, spark makes a return, after using GCP’s BigQuery for a year, as the tool of choice carrying out most of my ETLs as a data scientist.
+Once again, spark makes a return in my current job. After using GCP’s BigQuery for a year, I found it fairly sufficient for all my ETL needs as a data scientist and found the separation of ETL for feature engineering with a data warehouse like BigQuery or Redshift from model training which is often done in a notebook eg. Jupyter to be a comfortable way to work.
 
-As a data scientist, I’ve retained mental model for carrying out data analysis and ETL thankfully spark SQL. What did changed is the visible decoupling of (1) storage, (2) query engine and (3) metastore
+This time, my *tables* exists within the Hive MetaStore (HMS) and I initially struggled get back into the zone as there’s no easy way to query the tables and export them into the necessary formats I need as a data scientist. Thankfully spark SQL exists and the rest is history.
 
-Instead of colossus there is S3, where there was dremel you have either presto or spark and table metadata is stored in HIVE MetaStore (HMS) SQL is the only tool which has remained largely unchanged when moving from BQ to this new metadata+file system+QueryEngine(spark or presto) combination.
+ I would say the largest change for my is the succinct decoupling of (1) storage, (2) query engine and (3) metastore. Typical datawarehouse like RedShift and BigQuery do not always expose this. For example, instead of colossus there is S3 for my file system. And for the query engine instead of dremel you would have a constantly available presto cluster or a transient spark cluster to do heavier lifting jobs. Table and metadata are stored in HIVE MetaStore (HMS). 
 
 > In my opinion, **SQL as king** since it is the common tongue amongst data practitioners: Engineers, Scientists and Analysts.
 
-Testing queries and quick and dirty data exploration can done using presto without spinning up a cluster. There’s often many choices to choose from for good SQL workbenches with good formatter and column exploration.
+Comparing this with BigQuery, nothing much has changed. For quick and dirty data exploration I would use the web SQL workbench offered by Alation which is the company’s official data catalog and it offers a web based client. Both BigQuery and Alation (presto) offers the ability to share queries via a link and has excellent access control. Important information about tables are also found in the catalog ie. column descriptions, PII, data owner and is very similar to the features offered by GCP’s data catalog.
 
-However if you need to hook this up with an in-depth analysis / feature engineering + model building, basically anything which requires me to fire up a notebook, I’ll switch over to spark. Common team is cluster management is a full time task and should either be outsourced to a 3rd party like Qubole, cloud provider eg Dataproc or managed by a in house team.
+![alation](https://etheleon.github.io/images/alation.png)
 
-> NOTE: There is no need to parse all data neatly into columns due to the velocity and volume eg. logs and events. Only evaluate when you need, lazy eval. A good example of this is the [GA to BQ export](https://support.google.com/analytics/answer/3416092#zippy=%2Cin-this-article)
-
-When using BigQuery it also became apparent sharing data via tables/views is far superior over files eg. CSV or a google sheets due ue to security and the lack thereof in ability to audit the access of data.
-
-Similar to BQ, spark allows one to store the the results into a table whose read and query access can be managed securely. Sharing of queries and their requests (either as individual queries or a table is exactly the same as BigQuery. I’ll highly recommend the use of Alation as the web client and it supports enterprise HIVE. Sadly one con is there is no way query against presto views when using spark as your query engine.
-
-The rest of this post highlights how one would transition from a GCP set-up where everything is managed by HMS+S3+QueryEngine(sparkSQL) which is common for companies running on AWS.
+Only when I need to carry out some in-depth analysis / feature engineering + model building. Previously in Honestbee we used an external vendor to maintain our spark infrastructure while in the current company, we have a in-house team managing the spark clusters to be cost efficient. Similar to BQ’s datasets and tables, we are able to save tables in HMS. However this was not very clear initially and this post aims to bridge any knowledge gaps using Spark as the query engine, I might decide to include a edit or new post of using Presto to build views in HIVE.
 
 # SparkSession
-Sadly the use of R has also gradually decreased for me except for plotting with GGPLOT2. We will be using PySpark in this tutorial.
+Sadly the companies I’ve worked in are mostly python centric and the use of R has also decreased. However I still use GGPLOT2 for plotting although there has been more some [developments](http://plotnine.readthedocs.io) porting it to python. 
 
 Similar to R’s `sparklyr`  package we create a spark connection of type `SparkSession` (it is often aliased as `spark`) in PySpark
 
 Since spark 2.X, **Spark Session** unifies the **Spark Context** and **Hive Context** classes into a single interface. Its use is recommended over the older APIs for code targeting Spark 2.0.0 and above.
 
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_sparksession.r"></script>
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_sparksession.r”></script>
 
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_sparksession.py"></script>
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_sparksession.py”></script>
 
 
-## IO
-Spark Queries can either be executed against tables found in HMS whose partitions are known beforehand or directly against files stored in buckets.
+## InputOutput
+[With HIVE support enabled](https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html), spark queries can query against tables found in HMS whose partitions are known beforehand or directly against files stored in buckets, if they are not registered in HMS. 
 
-If you’re making queries against a HMS data warehouse using spark, you’ll need to enable HIVE support when creating your `SparkSession`
-
-While creating a `SparkSession` represented here by the `spark` variable, you’ll have to `enableHiveSupport`, see above
 
 ### Input
 
-You can read either directly from files or query against a metastore which supports multiple query engines eg. PRESTO / Spark SQL such as HIVE metastore (HMS).
+Spark supports querying against a metastore like a traditional data warehouse but you can also query against flat files in S3. Like how you can create tables in BQ with external files eg. CSV or parquet. 
 
-Depending on whether you want it as either in-memory spark DataFrame/  temp table/view or a registered table the steps are different.
+#### External files 
 
-#### In-memory
+A common format is parquet, you could register the data as a table in HMS or just work on it in memory. If you do not need register this as a table you can read the files directly into memory like the following.
 
-The best interface in this case is to use PySpark.
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=read_partitions.py”></script>
 
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=read_partitions.py"></script>
-
-> You’ll still be able to register this as a view using `df.createTempView("<view_name">)` and caching’s find too. Table partitioning is not supported for temporary views although you can still partition the RDDs via PySpark’s  `.repartition()`  method or SQL Hints `SELECT /*+ REPARTITION 3000 */ * FROM table` not when creating a view
+> You’ll be able to register this as a in-memory view using `df.createTempView("<view_name">)` and you might also consider caching to load the whole table into memory. Since this DataFrame only exists in memory and it’s not registered in HMS there’s no table partition. However the in-memory RDDs are partitioned.
 
 ### Output
 
-If you would like the results of the ETL/query to persist so you can query it again later sometime in the future, you could save the results in parquet or even in Tensorflow’s TFRecord format.
+If you would like the results of the ETL/query to persist so you can query it again later sometime in the future, you could save the results as an intermediate step which is archived or for machine learning either in parquet or Tensorflow’s TFRecord format.
 
 #### Tensorflow
 
@@ -85,7 +74,7 @@ The recommended file format is `tf.Data.TFRecordDataset`  when working with Tens
 
  You can save your results to this format using the following (gzipped to save space)
 
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=save_to_tfrecord.py"></script>
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=save_to_tfrecord.py”></script>
 
 
 > 💡 To use the `tfrecords` format, remember to include the connector JAR and place it in the `extra_classpath`. At the point of writing [org.tensorflow:spark-tensorflow-connector_2.11:1.115](https://repo1.maven.org/maven2/org/tensorflow/spark-tensorflow-connector_2.11/1.15.0/spark-tensorflow-connector_2.11-1.15.0.jar) works with the Gzip codec
@@ -99,96 +88,15 @@ Similar to how BigQuery stores the underlying data of tables in `capacitor` , co
 
 In the following example we are going to assume that the parquet files are stored in the following path: `s3://datascience-bucket/wesley.goi/data/pricing/demand_tbl/`
 
-#### Generate Column data type schema
+### Partitioned tables in HMS
 
-##### Manual
-You can prepare the table column [schema](https://cloud.google.com/bigquery/docs/schemas) like BigQuery manually and save it in a JSON file and parse it
-
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=example_schema.json"></script>
-
-##### Infer
-
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=infer_col_type.py"></script>
-
-#### Create table
-Since the table exists within HIVE, where the query in `spark.sql(query)`  follow’s HIVE’s SQL dialect.
-
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_hive_table.sql"></script>
-
-#### Insert partitions
-
-In this example we will be adding `s3://datascience-bucket/wesley.goi/data/pricing/demand_tbl/year=2021/month=01/day=11/hour=01`
-
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=add_partition_to_hive_table.sql"></script>
-
-You can check if the partition has been add by running `SHOW PARTITIONS pricing.demand_tbl`
-
-| partition |
-| — |
-| year=2021/month=01/day=11/hour=01|
-
-However when you query the table you’ll notice that you cannot query the partition yet.
-
-You’ll still have to refresh the table for that partition
-
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=refresh_table.sql"></script>
-
-Remember to refresh
-
-#### Bulk import
-
-If you have multiple partitions and do not wish to rerun the above for each partition, you may wish to run the MSCK command to sync the all files to the HMS.
-
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=bulk_update.sql"></script>
-
-
-## Temp Views / Tables
-In the same  spark session, it is possible to create a temp view. Temp views should not be confused with views in BigQuery, these are not registered in HMS and persists only for the duration of the given `SparkSession`.
-
-Data is stored in memory in-memory columnar format.
-
-These are especially useful if the data manipulation is complicated and multi stepped and you wish to persist some intermediate tables. In BQ, I would just save temp as a table.
-
-> NOTE: temp tables == temp views.
-
-From a query:
-
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_temp_view.sql"></script>
-
-
-## Views
-Unfortunately you cannot register a view in HIVE using spark but you can do so in presto.
-
-## Sampling
-Often when training your model, you might need to sample from the existing dataset due to memory constraints.
-
-You’ll have to set a seed as well when caching
-
-# Caching
-Caching is not lazy with ANSI SQL, and it will be stored in memory immediately.
-
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=cache_table.sql"></script>
-
-> Compared to PySpark `df.cache()`  (you’ll have to run `df.count()` to force the table to be loaded into memory), the above SQL statement is not lazy and will store the table in memory once executed.
-
-## UDFs
-User-Defined-Functions (UDFs) are ways to define your own functions. Which you can write in python before declaring it for use in SQL using `spark.udf.register`
-
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_udf.py"></script>
-
-> *NOTE*: If UDF requires C binaries which needs to be compiled, you’ll  need to install in the image used by the worker nodes.
-
-## External table partitions
 When working with spark and HMS, one has to be mindful of the term **partition**,  In spark, the term refers to data partitioning in Resilient Distributed Datasets (RDD), where partitions represent chunks of data sent to workers/executors for parallel processing. In HMS, the term represents how the data is stored in the cloud file system eg. S3 and helps guide queries agains the dataset in an efficient manner which is closer to the partitioned tables in databases.
-
-### How to partition
 
 First you’ll need to be able to save the data in S3, there’s a specific naming conversion for the file path which you’ll need to follow ie. `s3://<bucket>/prefix/key=value`.
 
 As you have seen, one of the most common ways to partition a table is via timestamp  eg. `s3://<bucket>/prefix/date=YYYYMMDD`
 
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=simple_partition.sql"></script>
-
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=simple_partition.sql”></script>
 
 One can also partition on multiple columns although in a nested manner
 eg.  `folder/year=2021/month=03/day=21`
@@ -205,10 +113,88 @@ Year=yyyy
 
 > ⚠️: Check if the external table which you’re querying is already partitioned.  `SHOW PARTITIONS table`
 
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=nested_partitions.sql"></script>
-
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=nested_partitions.sql”></script>
 
 > 💡You can check the number of partitions scanned if you run `.explain(mode=“formatted”)` to see
+
+#### Generate Column data type schema
+
+##### Manual
+You can prepare the table column [schema](https://cloud.google.com/bigquery/docs/schemas) like BigQuery manually and save it in a JSON file and parse it.
+
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=example_schema.json”></script>
+
+##### Infer
+
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=infer_col_type.py”></script>
+
+#### Create table
+Since the table exists within HIVE, where the query in `spark.sql(query)`  follow’s HIVE’s SQL dialect.
+
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_hive_table.sql”></script>
+
+#### Insert partitions
+
+In this example we will be adding `s3://datascience-bucket/wesley.goi/data/pricing/demand_tbl/year=2021/month=01/day=11/hour=01`
+
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=add_partition_to_hive_table.sql”></script>
+
+You can check if the partition has been add by running `SHOW PARTITIONS pricing.demand_tbl`
+
+| partition |
+| --- |
+| `year=2021/month=01/day=11/hour=01`|
+
+However when you query the table you’ll notice that you cannot query the partition yet.
+
+You’ll still have to refresh the table for that partition
+
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=refresh_table.sql”></script>
+
+Remember to refresh
+
+#### Bulk import
+
+If you have multiple partitions and do not wish to rerun the above for each partition, you may wish to run the MSCK command to sync the all files to the HMS.
+
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=bulk_update.sql”></script>
+
+
+## Temp Views / Tables
+In the same  spark session, it is possible to create a temp view. Temp views should not be confused with views in BigQuery, these are not registered in HMS and persists only for the duration of the given `SparkSession`.
+
+Data is stored in memory in-memory columnar format.
+
+These are especially useful if the data manipulation is complicated and multi stepped and you wish to persist some intermediate tables. In BQ, I would just save temp as a table.
+
+> NOTE: temp tables == temp views.
+
+From a query:
+
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_temp_view.sql”></script>
+
+
+## Views
+Unfortunately you cannot register a view in HIVE using spark but you can do so in presto.
+
+## Sampling
+Often when training your model, you might need to sample from the existing dataset due to memory constraints.
+
+You’ll have to set a seed as well when caching
+
+# Caching
+Caching is not lazy with ANSI SQL, and it will be stored in memory immediately.
+
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=cache_table.sql”></script>
+
+> Compared to PySpark `df.cache()`  (you’ll have to run `df.count()` to force the table to be loaded into memory), the above SQL statement is not lazy and will store the table in memory once executed.
+
+## UDFs
+User-Defined-Functions (UDFs) are ways to define your own functions. Which you can write in python before declaring it for use in SQL using `spark.udf.register`
+
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_udf.py”></script>
+
+> *NOTE*: If UDF requires C binaries which needs to be compiled, you’ll  need to install in the image used by the worker nodes.
 
 
 ## SQL Hints
@@ -237,12 +223,12 @@ Node 3 = 7,8,9 + (4,5,6)
 
 You can also improve query time by including columns when repartitioning especially if you are joining on these columns. This applies to tables as well as temp views.
 
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=hints.sql"></script>
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=hints.sql”></script>
 
 
 > You can also chain multiple repartition hints: repartition(100), coalesce(500) and repartition by range for column `c` into 3 partitions
 
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=chain_hints.sql"></script>
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=chain_hints.sql”></script>
 
 
 https://spark.apache.org/docs/3.0.0/sql-ref-syntax-qry-select-hints.html
@@ -284,7 +270,7 @@ If the table from any side is smaller than broadcast in in hash join threshold, 
 
 > You can try this [AQE Demo - Databricks](https://docs.databricks.com/_static/notebooks/aqe-demo.html?_ga=2.53314607.646459968.1595449158-1487382839.1592553333)
 
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=spark_three_opts.py"></script>
+<script src=“https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=spark_three_opts.py”></script>
 
 
 `CustomShuffleReader` indicates it’s using AQE and it ends with AdaptiveSparkPlan
