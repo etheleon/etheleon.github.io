@@ -257,8 +257,7 @@ Repartition 100, true
 
 Often the number of records per partition is not equal, especially if you’re partitioning by time and you might end up the number of records per partition following a cyclic pattern. eg. Traffic at night is much lesser than traffic in the day.
 
-[image:60D2C95E-A322-43BC-AC34-A2A4915012C0-2568-000000AF22660FB5/unknown.png]
-
+![partition_imbal](https://etheleon.github.io/images/partitions_imbalance.png)
 
 ### Join hints
 
