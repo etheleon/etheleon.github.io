@@ -26,9 +26,9 @@ Once again, spark makes a return, after using GCP’s BigQuery for a year, as th
 
 As a data scientist, I’ve retained mental model for carrying out data analysis and ETL thankfully spark SQL. What did changed is the visible decoupling of (1) storage, (2) query engine and (3) metastore 
 
-Instead of colossus there is S3, where there was dremel you have either presto or spark and table metadata is stored in HIVE MetaStore (HMS)
+Instead of colossus there is S3, where there was dremel you have either presto or spark and table metadata is stored in HIVE MetaStore (HMS) SQL is the only tool which has remained largely unchanged when moving from BQ to this new metadata+file system+QueryEngine(spark|presto) combination. 
 
-> SQL is the only tool which has remained largely unchanged when moving from BQ to this new metadata+file system+QueryEngine(spark|presto) combination. In my opinion this has further solidified **SQL as king** since it is the common tongue amongst data practitioners: Engineers, Scientists and Analysts.
+> In my opinion this has further solidified **SQL as king** since it is the common tongue amongst data practitioners: Engineers, Scientists and Analysts.
 
 Testing queries and quick and dirty data exploration can done using presto without spinning up a cluster. There’s often many choices to choose from for good SQL workbenches with good formatter and column exploration. 
 
@@ -87,6 +87,7 @@ The recommended file format is `tf.Data.TFRecordDataset`  when working with Tens
 
 <script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=save_to_tfrecord.py"></script>
 
+
 > 💡 To use the `tfrecords` format, remember to include the connector JAR and place it in the `extra_classpath`. At the point of writing [org.tensorflow:spark-tensorflow-connector_2.11:1.115](https://repo1.maven.org/maven2/org/tensorflow/spark-tensorflow-connector_2.11/1.15.0/spark-tensorflow-connector_2.11-1.15.0.jar) works with the Gzip codec
 
 
@@ -103,17 +104,7 @@ In the following example we are going to assume that the parquet files are store
 ##### Manual
 You can prepare the table column [schema](https://cloud.google.com/bigquery/docs/schemas) like BigQuery manually and save it in a JSON file and parse it
 
-```
-[
- {
-   "description": "[DESCRIPTION]",
-   "name": "[NAME]",
-   "type": "[TYPE]",
-   "mode": "[MODE]"
- }
-....
-]
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=example_schema.json"></script>
 
 ##### Infer
 
@@ -174,12 +165,9 @@ Often when training your model, you might need to sample from the existing datas
 You’ll have to set a seed as well when caching
 
 # Caching 
-Caching is not lazy with ANSI SQL, and it will be stored in memory immediately.
+Caching is not lazy with ANSI SQL, and it will be stored in memory immediately. 
 
-```sql
--- CACHE VIEW <tablename> is not viable syntax
-CACHE TABLE <tablename>
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=cache_table.sql"></script>
 
 > Compared to PySpark `df.cache()`  (you’ll have to run `df.count()` to force the table to be loaded into memory), the above SQL statement is not lazy and will store the table in memory once executed. 
 
@@ -199,11 +187,7 @@ First you’ll need to be able to save the data in S3, there’s a specific nami
 
 As you have seen, one of the most common ways to partition a table is via timestamp  eg. `s3://<bucket>/prefix/date=YYYYMMDD`
 
-
-```sql
-SELECT * FROM table 
-WHERE date BETWEEN 20210301 AND 20210415
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=simple_partition.sql"></script>
 
 
 One can also partition on multiple columns although in a nested manner 
@@ -221,11 +205,8 @@ Year=yyyy
 
 > ⚠️: Check if the external table which you’re querying is already partitioned.  `SHOW PARTITIONS table`
 
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=nested_partitions.sql"></script>
 
-```sql
-SELECT * FROM table
-WHERE year||month||day BETWEEN 20210301 AND 20210415
-```
 
 > 💡You can check the number of partitions scanned if you run `.explain(mode=“formatted”)` to see 
 
@@ -237,9 +218,9 @@ Hints go way back as early as spark 2.2, which introduced. These could be groupe
 
 By default when repartitioning, it’ll be set to 200 partitions, you might not want this and to optimise the query you might want to *hint* spark otherwise
 
-	1.  `REPARTITION`
-	2.  `COALESCE` only reduces the number of partitions, optimised version of repartition. Data which is kept on the original nodes and only those which needs to be moved are moved  (see example below)
-	3. `REPARTITION_BY_RANGE`  eg. You have records which has a running id from 0 - 100000 and you’ll want to split them into 3 partitions `repartitionByRange(col, 3)`
+1.  `REPARTITION`
+2.  `COALESCE` only reduces the number of partitions, optimised version of repartition. Data which is kept on the original nodes and only those which needs to be moved are moved  (see example below)
+3. `REPARTITION_BY_RANGE`  eg. You have records which has a running id from 0 - 100000 and you’ll want to split them into 3 partitions `repartitionByRange(col, 3)`
 
 When coalescing you’re shrinking the number of nodes on which the data is kept eg. From 4 to 
 ```
@@ -256,18 +237,13 @@ Node 3 = 7,8,9 + (4,5,6)
 
 You can also improve query time by including columns when repartitioning especially if you are joining on these columns. This applies to tables as well as temp views.
 
-```sql
--- spark2
--- SELECT /*+ REPARTITION 3000 */ *  
-SELECT /*+ REPARTITION(2000, col1, col2, col3) */ *
-FROM table
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=hints.sql"></script>
+
 
 > You can also chain multiple repartition hints: repartition(100), coalesce(500) and repartition by range for column `c` into 3 partitions
 
-```sql
-SELECT /*+ REPARTITION(100), COALESCE(500), REPARTITION_BY_RANGE(3, c) */ * FROM t;
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=chain_hints.sql"></script>
+
 
 https://spark.apache.org/docs/3.0.0/sql-ref-syntax-qry-select-hints.html
 the optimised plan is as follows:
