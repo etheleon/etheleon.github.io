@@ -34,7 +34,7 @@ Testing queries and quick and dirty data exploration can done using presto witho
 
 However if you need to hook this up with an in-depth analysis / feature engineering + model building, basically anything which requires me to fire up a notebook, I’ll switch over to spark. Common team is cluster management is a full time task and should either be outsourced to a 3rd party like Qubole, cloud provider eg Dataproc or managed by a in house team. 
 
-> NOTE: There is no need to parse all data neatly into columns due to the velocity and volume eg. logs and events. Only evaluate when you need, lazy eval. A good example of this is the [Google Analytics (GA) BigQuery data export](https://support.google.com/analytics/answer/3416092#zippy=%2Cin-this-article)
+> NOTE: There is no need to parse all data neatly into columns due to the velocity and volume eg. logs and events. Only evaluate when you need, lazy eval. A good example of this is the [GA to BQ export](https://support.google.com/analytics/answer/3416092#zippy=%2Cin-this-article)
 
 When using BigQuery it also became apparent sharing data via tables/views is far superior over files eg. CSV or a google sheets due ue to security and the lack thereof in ability to audit the access of data. 
 
@@ -49,34 +49,9 @@ Similar to R’s `sparklyr`  package we create a spark connection of type `Spark
 
 Since spark 2.X, **Spark Session** unifies the **Spark Context** and **Hive Context** classes into a single interface. Its use is recommended over the older APIs for code targeting Spark 2.0.0 and above.
 
-```r
-# Using sparklyr package
-conf <- spark_config()
-conf$spark.executor.memory = "16G"
-conf$spark.executor.instance = num_executors
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_sparksession.r"></script>
 
-spark <- spark_connect(
-	master = "local",
-	version = "2.3",
-	appName = "my_app_name"
-	conf = conf
-)
-```
-
-```python
-# Using pyspark
-conf = (
-	pyspark.SparkConf()
-      .set("spark.executor.instances", num_executors)
-)
-spark = (
-	SparkSession.builder
-	.appName("my_app_name")
-	.config(conf=conf)
-	.enableHiveSupport()
-	.getOrCreate()
-)
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_sparksession.py"></script>
 
 
 ## IO
@@ -96,10 +71,7 @@ Depending on whether you want it as either in-memory spark DataFrame/  temp tabl
 
 The best interface in this case is to use PySpark.
 
-```python
-# You can specify the partitions using wildcard
-df = spark.read.parquet("s3://<bucket>/<suffix>/year=*/month=*/day=*/hour=*")
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=read_partitions.py"></script>
 
 > You’ll still be able to register this as a view using `df.createTempView("<view_name">)` and caching’s find too. Table partitioning is not supported for temporary views although you can still partition the RDDs via PySpark’s  `.repartition()`  method or SQL Hints `SELECT /*+ REPARTITION 3000 */ * FROM table` not when creating a view
 
@@ -113,29 +85,7 @@ The recommended file format is `tf.Data.TFRecordDataset`  when working with Tens
 
  You can save your results to this format using the following (gzipped to save space)
 
-```python
-from spark.sql import Dataframe
-
-def save_to_tfrecord(df: DataFrame, path):
-    """
-	  Saves Spark dataframe to tfrecord in S3
-	  Parameter
-    ------
-    df: DataFrame
-	      spark dataframe
-    path: string
-        file path, if it's S3 eg. 
-        s3://<bucket>/some/path/tfrecord. 
-		  It'll save the part files under the this folder gzipped
-	  """
-    (
-        df.write
-        .format("tfrecords")
-        .option("codec", "org.apache.hadoop.io.compress.GzipCodec")
-        .mode("overwrite")
-        .save(path)
-    )
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=save_to_tfrecord.py"></script>
 
 > 💡 To use the `tfrecords` format, remember to include the connector JAR and place it in the `extra_classpath`. At the point of writing [org.tensorflow:spark-tensorflow-connector_2.11:1.115](https://repo1.maven.org/maven2/org/tensorflow/spark-tensorflow-connector_2.11/1.15.0/spark-tensorflow-connector_2.11-1.15.0.jar) works with the Gzip codec
 
@@ -167,62 +117,18 @@ You can prepare the table column [schema](https://cloud.google.com/bigquery/docs
 
 ##### Infer
 
-```python
-# prepare column data type from inferred dataframe 
-## partition columns
-partition_cols_dict = {
-	"year": "string",
-	"month": "string", 
-	"day": "string",
-	"hour": "string"
-}
-partitions = ", ".join([f"{key} {partition_cols_dict[key]}" for key in partition_cols_dict])
-
-# non-partitino columns
-partition_cols = [key for key in partition_cols_dict]
-columns = ", \n".join(
-    spark.sql("describe temp")
-    .rdd.filter(lambda row: row.col_name not in partition_cols)
-    .map(lambda row: row[0] + " " + row[1])
-    .collect()
-)
-# >>> print(columns)
-#     country_id bigint, 
-#     city_id bigint, 
-#     utcDate string, 
-#     user_id bigint
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=infer_col_type.py"></script>
 
 #### Create table 
 Since the table exists within HIVE, where the query in `spark.sql(query)`  follow’s HIVE’s SQL dialect.
 
-```sql
--- DROP TABLE IF EXISTS schema.table
-CREATE EXTERNAL TABLE IF NOT EXISTS pricing.demand_tbl
-(
-     country_id bigint, 
-     city_id bigint, 
-     utcDate string, 
-     user_id bigint
-)
-PARTITIONED BY (year string, month string, day string hour string)
-LOCATION 's3a://datascience-bucket/wesley.goi/data/pricing/demand_tbl/' -- base path
-STORED AS PARQUET
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_hive_table.sql"></script>
 
 #### Insert partitions
 
 In this example we will be adding `s3://datascience-bucket/wesley.goi/data/pricing/demand_tbl/year=2021/month=01/day=11/hour=01`
 
-```sql
-/* If overwriting 
-ALTER TABLE schema.table DROP IF EXISTS PARTITION ({partition_str})
-*/
-ALTER TABLE pricing.demand_tbl ADD
-PARTITION (year='2021', month='01', day='11', hour='01') 
--- key = 'value'
-LOCATION 's3://datascience-bucket/wesley.goi/data/pricing/demand_tbl/year=2021/month=01/day=11/hour=01'
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=add_partition_to_hive_table.sql"></script>
 
 You can check if the partition has been add by running `SHOW PARTITIONS pricing.demand_tbl`
 
@@ -234,10 +140,7 @@ However when you query the table you’ll notice that you cannot query the parti
 
 You’ll still have to refresh the table for that partition
 
-```sql
-REFRESH TABLE pricing.demand_tbl
-PARTITION (year='2021', month='01', day='11', hour='01')
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=refresh_table.sql"></script>
 
 Remember to refresh
 
@@ -245,9 +148,7 @@ Remember to refresh
 
 If you have multiple partitions and do not wish to rerun the above for each partition, you may wish to run the MSCK command to sync the all files to the HMS. 
 
-```sql
-MSCK REPAIR TABLE schema.table
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=bulk_update.sql"></script>
 
 
 ## Temp Views / Tables
@@ -261,27 +162,7 @@ These are especially useful if the data manipulation is complicated and multi st
 
 From a query:
 
-```sql
-CREATE TEMPORARY VIEW my_table_name IF NOT EXISTS AS 
-<QUERY>
-```
-
-From a parquet:
-
-```sql
-CREATE TEMPORARY VIEW IF NOT EXISTS
-
-my_table_name 
-USING org.apache.spark.sql.parquet
-OPTIONS (path "s3://<bucket>/<key>")
-— I wonder if it works for partitioned as
-```
-
-Similarly, if you need to drop the view:
-
-```SQL
-DROP TEMP VIEW <view name>
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_temp_view.sql"></script>
 
 
 ## Views
@@ -303,32 +184,9 @@ CACHE TABLE <tablename>
 > Compared to PySpark `df.cache()`  (you’ll have to run `df.count()` to force the table to be loaded into memory), the above SQL statement is not lazy and will store the table in memory once executed. 
 
 ## UDFs
-User-Defined-Functions (UDFs) are ways to define your own functions. Which you can write in python before declaring it
+User-Defined-Functions (UDFs) are ways to define your own functions. Which you can write in python before declaring it for use in SQL using `spark.udf.register`
 
-In addition, it’s required is to define the output type 
-
-```python
-from pyspark.sql import functions as F
-from pyspark.sql.types import FloatType
-
-def some_func(a: int, b: int) -> int:
-	return a+b
-
-udf_some_func = F.udf(some_func, FloatType())
-```
-
-Alternatively, if you want to use the function in SQL, you’ll need to first register the function using `spark.udf.register`
-
-```python
-spark.udf.register("udf_some_func", some_func, StringType())
-```
-
-Once you’ve registered the UDF, you’ll be able to use it in the query 
-
-```sql
-SELECT *, UDF_SOME_FUNC(col_a, col_b) FROM table
-```
-
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_udf.py"></script>
 
 > *NOTE*: If UDF requires C binaries which needs to be compiled, you’ll  need to install in the image used by the worker nodes. 
 
@@ -451,11 +309,7 @@ If the table from any side is smaller than broadcast in in hash join threshold, 
 
 > You can try this [AQE Demo - Databricks](https://docs.databricks.com/_static/notebooks/aqe-demo.html?_ga=2.53314607.646459968.1595449158-1487382839.1592553333)
 
-```python
-# enable AQE
-spark.conf.set("spark.sql.adaptive.enabled", "true")
-# enable shuffle partitions optimisation
-spark.conf.set("spark.sql.adaptive.coalescePartitions.enabled", "true")
-```
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=spark_three_opts.py"></script>
+
 
 `CustomShuffleReader` indicates it’s using AQE and it ends with AdaptiveSparkPlan
