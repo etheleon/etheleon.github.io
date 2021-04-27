@@ -45,7 +45,7 @@ Since spark 2.X, **Spark Session** unifies the **Spark Context** and **Hive Cont
 
 <script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_sparksession.r"></script>
 
-<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_sparksession.py"></script>
+<script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_session.py"></script>
 
 
 ## InputOutput
