@@ -1,7 +1,7 @@
 ---
 layout: post
-title: “Not so big queries, hitchhiker’s guide to datawarehousing with datalakes with Spark”
-excerpt: “Back to the future: Revisiting HIVE metastore, datalakes and spark”
+title: "Not so big queries, hitchhiker’s guide to datawarehousing with datalakes with Spark"
+excerpt: "Back to the future: Revisiting HIVE metastore, datalakes and spark"
 categories: articles
 tags: [spark]
 author: wesley_goi
