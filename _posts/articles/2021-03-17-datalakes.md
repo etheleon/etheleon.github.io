@@ -178,9 +178,9 @@ From a query:
 Unfortunately you cannot register a view in HIVE using spark but you can do so in presto.
 
 ## Sampling
-Often when training your model, you might need to sample from the existing dataset due to memory constraints.
+Often when training your model, you might need to [sample](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.sample.html) from the existing dataset due to memory constraints.
 
-You’ll have to set a seed as well when caching
+You might want to set a seed as well when caching if you are doing hyperparameter tuning so you will get the same dataset on each iteration. And set the `withReplacement` parameter to be `False`.
 
 # Caching
 Caching is not lazy with ANSI SQL, and it will be stored in memory immediately.
