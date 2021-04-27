@@ -26,9 +26,9 @@ Once again, spark makes a return, after using GCP’s BigQuery for a year, as th
 
 As a data scientist, I’ve retained mental model for carrying out data analysis and ETL thankfully spark SQL. What did changed is the visible decoupling of (1) storage, (2) query engine and (3) metastore 
 
-Instead of colossus there is S3, where there was dremel you have either presto or spark and table metadata is stored in HIVE MetaStore (HMS) SQL is the only tool which has remained largely unchanged when moving from BQ to this new metadata+file system+QueryEngine(spark|presto) combination. 
+Instead of colossus there is S3, where there was dremel you have either presto or spark and table metadata is stored in HIVE MetaStore (HMS) SQL is the only tool which has remained largely unchanged when moving from BQ to this new metadata+file system+QueryEngine(spark or presto) combination. 
 
-> In my opinion this has further solidified **SQL as king** since it is the common tongue amongst data practitioners: Engineers, Scientists and Analysts.
+> In my opinion, **SQL as king** since it is the common tongue amongst data practitioners: Engineers, Scientists and Analysts.
 
 Testing queries and quick and dirty data exploration can done using presto without spinning up a cluster. There’s often many choices to choose from for good SQL workbenches with good formatter and column exploration. 
 
