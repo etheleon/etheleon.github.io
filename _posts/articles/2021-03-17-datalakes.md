@@ -22,15 +22,16 @@ Since our [earlier post](https://etheleon.github.io/articles/spark-joy/), I’ve
 
 > The following post does not represent my employer and reflects my own personal views only.
 
-Once again, spark makes a return in my current job. After using GCP’s BigQuery for a year, I found it fairly sufficient for all my ETL needs as a data scientist and found the separation of ETL for feature engineering with a data warehouse like BigQuery or Redshift from model training which is often done in a notebook eg. Jupyter to be a comfortable way to work.
-
-This time, my *tables* exists within the Hive MetaStore (HMS) and I initially struggled get back into the zone as there’s no easy way to query the tables and export them into the necessary formats I need as a data scientist. Thankfully spark SQL exists and the rest is history.
-
- I would say the largest change for my is the succinct decoupling of (1) storage, (2) query engine and (3) metastore. Typical datawarehouse like RedShift and BigQuery do not always expose this. For example, instead of colossus there is S3 for my file system. And for the query engine instead of dremel you would have a constantly available presto cluster or a transient spark cluster to do heavier lifting jobs. Table and metadata are stored in HIVE MetaStore (HMS).
+Once again, spark makes a return in my current job. After using Redshift and GCP’s BigQuery, I've formed myself a working style which separates ETL work for example feature engineering in SQL and model training at first in a notebook then formalised as a class object and finally a script or ML pipeline. 
 
 > In my opinion, **SQL as king** since it is the common tongue amongst data practitioners: Engineers, Scientists and Analysts.
 
-Comparing this with BigQuery, nothing much has changed. For quick and dirty data exploration I would use the web SQL workbench offered by Alation which is the company’s official data catalog and it offers a web based client. Both BigQuery and Alation (presto) offers the ability to share queries via a link and has excellent access control. Important information about tables are also found in the catalog ie. column descriptions, PII, data owner and is very similar to the features offered by GCP’s data catalog.
+As for the ETL portion, nothing too drastic has changed. For quick and dirty data exploration I would use the web SQL workbench offered by Alation Compose the web-based editor offered by the company’s official data catalog and does not require one to set up any login credentials with a local client like DataGrip or DBeaver. Both BigQuery and Alation (presto) offers the ability to share queries via a link and has excellent access control. Important information about tables are also found in the catalog ie. column descriptions, PII, data owner and is very similar to the features offered by GCP’s data catalog.
+
+However, this time, instead of Redshift or Bigquery there is HIVE. *tables* exists within the Hive MetaStore (HMS) which I struggled to learn how to add drop tables to with initially. Also there was a decoupling of the query engine with the data warehouse was quite jarring at first since there were two dialects used by the company, spark SQL and Presto SQL. With bigquery the query engine is part of the datawarehouse. 
+
+This succinct decoupling of (1) storage, (2) query engine and (3) metastore was quite new to me. It was only later after doing some reading on my own, that I was able to map BigQuery to the current setup. For example, instead of colossus there is S3 for my file system. And for the query engine instead of dremel you would have a constantly available presto cluster or a transient spark cluster to do heavier lifting jobs. Table and metadata are stored in HIVE MetaStore (HMS).
+
 
 ![alation](https://etheleon.github.io/images/alation.png)
 
