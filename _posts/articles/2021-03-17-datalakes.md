@@ -130,7 +130,7 @@ You can prepare the table column [schema](https://cloud.google.com/bigquery/docs
 <script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=infer_col_type.py"></script>
 
 #### Create table
-Since the table exists within HIVE, where the query in `spark.sql(query)`  follow’s HIVE’s SQL dialect.
+TO create a table in HIVE, we will be using the CREATE statement from HIVE SQL:
 
 <script src="https://gist.github.com/etheleon/caa944b36077f83b7a448b9b03779216.js?file=create_hive_table.sql"></script>
 
